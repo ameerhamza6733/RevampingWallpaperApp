@@ -29,7 +29,7 @@ fun AnimatedTextView(text: String) {
         val animatedProgress = remember { Animatable(0f) }
         LaunchedEffect(text) {
             animatedProgress.animateTo(
-                targetValue = text.length.toFloat(),
+                targetValue = (text.length+1).toFloat(),
                 animationSpec = tween(
                     durationMillis = 500,
                     easing = LinearEasing
@@ -47,11 +47,10 @@ fun AnimatedTextView(text: String) {
                         style = SpanStyle(color = color, fontSize = 24.sp,
                             fontWeight = FontWeight.Bold,
                             fontFamily = Roboto,
-                            ),
-                        {
-                            append(char)
-                        }
-                    )
+                            )
+                    ) {
+                        append(char)
+                    }
                 }
             },
             modifier = Modifier,

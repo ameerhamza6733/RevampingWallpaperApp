@@ -1,7 +1,7 @@
 package com.ameerhamza.animatedgiflivewallpapers.homePage.data.dataSources
 
-import com.ameerhamza.animatedgiflivewallpapers.comman.data.exceptions.ApiException
-import com.ameerhamza.animatedgiflivewallpapers.comman.data.exceptions.NetworkException
+import com.ameerhamza.animatedgiflivewallpapers.common.data.exceptions.ApiException
+import com.ameerhamza.animatedgiflivewallpapers.common.data.exceptions.NetworkException
 import com.ameerhamza.animatedgiflivewallpapers.homePage.data.model.VideoWallpaperResponse
 import com.ameerhamza.animatedgiflivewallpapers.homePage.data.servies.VideoWallpaperService
 import javax.inject.Inject

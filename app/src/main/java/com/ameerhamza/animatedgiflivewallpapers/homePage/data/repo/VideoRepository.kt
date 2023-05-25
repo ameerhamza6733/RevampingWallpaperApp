@@ -1,6 +1,5 @@
 package com.ameerhamza.animatedgiflivewallpapers.homePage.data.repo
-import com.ameerhamza.animatedgiflivewallpapers.comman.data.Result
-import com.ameerhamza.animatedgiflivewallpapers.homePage.data.dataSources.VideoRemoteDataSource
+import com.ameerhamza.animatedgiflivewallpapers.common.data.Result
 import com.ameerhamza.animatedgiflivewallpapers.homePage.data.dataSources.VideoRemoteFakeDataSource
 import com.ameerhamza.animatedgiflivewallpapers.homePage.data.model.VideoWallpaperUi
 import javax.inject.Inject
