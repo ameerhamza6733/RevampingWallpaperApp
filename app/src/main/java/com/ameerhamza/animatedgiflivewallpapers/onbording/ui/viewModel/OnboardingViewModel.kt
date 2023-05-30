@@ -36,7 +36,6 @@ class OnboardingViewModel @Inject constructor(private val repository: Onboarding
 
     }
 
-
     fun markOnboardingCompleted() {
         viewModelScope.launch {
             withContext(Dispatchers.IO) {
@@ -46,10 +45,10 @@ class OnboardingViewModel @Inject constructor(private val repository: Onboarding
         }
     }
 
-     fun fetchOnboardingData() {
-        viewModelScope.launch(Dispatchers.IO) {
-            val items = onboardingDataSource.fetchOnboardingItems()
-            _onboardingItems.postValue(items )
-        }
-    }
+//     fun fetchOnboardingData() {
+//        viewModelScope.launch(Dispatchers.IO) {
+//            val items = onboardingDataSource.fetchOnboardingItems()
+//            _onboardingItems.postValue(items )
+//        }
+//    }
 }
