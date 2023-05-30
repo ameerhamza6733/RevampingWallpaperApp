@@ -18,7 +18,6 @@ class MainActivity : ComponentActivity() {
     private val viewModel by viewModels<HomeScreenViewModel>()
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        viewModel.fetchVideos()
         setContent {
             MyApplicationTheme {
                 // A surface container using the 'background' color from the theme

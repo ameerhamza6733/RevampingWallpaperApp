@@ -8,6 +8,6 @@ interface VideoWallpaperService {
     @GET("search")
     suspend fun getVideos(
         @Query("query") query: String
-    ): retrofit2.Response<VideoWallpaperPixelsApiResponse>
+    ): VideoWallpaperPixelsApiResponse
 }
 

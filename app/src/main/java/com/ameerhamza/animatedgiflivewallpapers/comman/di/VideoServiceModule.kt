@@ -7,17 +7,19 @@ import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
 import okhttp3.OkHttpClient
+import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import javax.inject.Singleton
 
 @Module
 @InstallIn(SingletonComponent::class)
-object VideoModule {
+object VideoServiceModule {
     @Provides
     @Singleton
     fun provideOkHttpClient(): OkHttpClient {
         return OkHttpClient.Builder()
+            .addInterceptor(HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BODY))
             .addInterceptor { chain ->
                 val original = chain.request()
                 val requestBuilder = original.newBuilder()
@@ -25,7 +27,7 @@ object VideoModule {
                         "Authorization",
                         BuildConfig.PEXELS_API_KEY
                     )
-                    .method(original.method(), original.body())
+                    .method(original.method, original.body)
                 val request = requestBuilder.build()
                 chain.proceed(request)
             }

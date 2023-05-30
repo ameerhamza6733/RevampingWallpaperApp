@@ -9,17 +9,18 @@ import javax.inject.Inject
 class VideoRemoteDataSource @Inject constructor(private val videoApiService: VideoWallpaperService):VideoDataSource {
 
     override suspend fun getVideos(): List<VideoWallpaperResponse>? {
-        return try {
-            val response = videoApiService.getVideos("Cars")
-            if (response.isSuccessful) {
-                response.body()?.videos?.map { VideoWallpaperResponse(image = it.image, id = it.id, url = it.url) } ?: emptyList()
-            } else {
-                throw ApiException("API request failed with status code ${response.code()}")
-            }
-        } catch (e: Exception) {
-            e.printStackTrace()
-            throw NetworkException("Failed to fetch videos", e)
-        }
+        return emptyList()
+//        return try {
+//            val response = videoApiService.getVideos("Cars")
+//            if (response.isSuccessful) {
+//                response.body()?.videos?.map { VideoWallpaperResponse(image = it.image, id = it.id, url = it.url) } ?: emptyList()
+//            } else {
+//                throw ApiException("API request failed with status code ${response.code()}")
+//            }
+//        } catch (e: Exception) {
+//            e.printStackTrace()
+//            throw NetworkException("Failed to fetch videos", e)
+//        }
     }
 }
 

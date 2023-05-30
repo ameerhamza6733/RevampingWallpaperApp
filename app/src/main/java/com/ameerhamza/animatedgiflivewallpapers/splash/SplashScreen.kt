@@ -11,6 +11,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.ameerhamza.animatedgiflivewallpapers.R
+import com.ameerhamza.animatedgiflivewallpapers.comman.ui.component.navigateToHomeScreen
 import com.ameerhamza.animatedgiflivewallpapers.comman.ui.component.navigateToOnboarding
 import com.ameerhamza.animatedgiflivewallpapers.onbording.ui.viewModel.OnboardingViewModel
 import com.bumptech.glide.integration.compose.ExperimentalGlideComposeApi
@@ -50,8 +51,7 @@ fun SplashScreen(
             imageSizeState = ImageSizeState.Large
             delay(2000)
             if (onboardingCompleted) {
-                navigateToOnboarding(navController)
-
+                navigateToHomeScreen(navController)
             } else {
                 navigateToOnboarding(navController)
             }
