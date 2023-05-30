@@ -40,7 +40,7 @@ fun setupNavigation(
         }
         composable(NavDestination.HOME_SCREEN){
             val viewModel = hiltViewModel<HomeScreenViewModel>()
-            PagingListScreen(viewModel)
+            PagingListScreen(viewModel.getVideos())
         }
     }
 }

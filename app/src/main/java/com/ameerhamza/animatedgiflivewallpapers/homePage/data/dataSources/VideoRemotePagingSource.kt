@@ -6,16 +6,16 @@ import com.ameerhamza.animatedgiflivewallpapers.homePage.data.model.VideoWallpap
 import com.ameerhamza.animatedgiflivewallpapers.homePage.data.servies.VideoWallpaperService
 import javax.inject.Inject
 
-class VideoRemotePagingSource (private val videoApiService: VideoWallpaperService) : PagingSource<String, VideoWallpaperPixelsApiResponse.VideoWallpaperPixelsVideoListResponse>() {
+class VideoRemotePagingSource (private val videoApiService: VideoWallpaperService) : PagingSource<String, VideoDataProvider>() {
     override suspend fun load(
         params: LoadParams<String>
-    ): LoadResult<String, VideoWallpaperPixelsApiResponse.VideoWallpaperPixelsVideoListResponse> {
+    ): LoadResult<String, VideoDataProvider> {
         try {
 
             val postion = (params.key ?: "1")
             val response = videoApiService.getVideos("Cars")
             return LoadResult.Page(
-                data = response.videos,
+                data = response.videos.map{VideoDataProvider(it)},
                 prevKey = if (postion=="1")  null else (postion.toInt()-1).toString(),
                 nextKey = if (postion.toInt()==response.totalResults) null else (postion.toInt()-1).toString()
             )
@@ -26,7 +26,7 @@ class VideoRemotePagingSource (private val videoApiService: VideoWallpaperServic
         }
     }
 
-    override fun getRefreshKey(state: PagingState<String, VideoWallpaperPixelsApiResponse.VideoWallpaperPixelsVideoListResponse>): String? {
+    override fun getRefreshKey(state: PagingState<String, VideoDataProvider>): String? {
         // Try to find the page key of the closest page to anchorPosition, from
         // either the prevKey or the nextKey, but you need to handle nullability
         // here:

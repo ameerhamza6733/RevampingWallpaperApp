@@ -4,8 +4,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.paging.PagingData
 import androidx.paging.cachedIn
+import com.ameerhamza.animatedgiflivewallpapers.homePage.data.dataSources.VideoDataProvider
 import com.ameerhamza.animatedgiflivewallpapers.homePage.state.MainScreenState
-import com.ameerhamza.animatedgiflivewallpapers.homePage.data.model.VideoWallpaperPixelsApiResponse
 import com.ameerhamza.animatedgiflivewallpapers.homePage.data.repo.VideoRepository
 import com.ameerhamza.animatedgiflivewallpapers.onbording.data.repository.OnboardingRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -25,7 +25,7 @@ class HomeScreenViewModel @Inject constructor(
 
     var mainScreenState = MutableStateFlow<MainScreenState>(MainScreenState.Splash)
 
-    fun getVideos() : Flow<PagingData<VideoWallpaperPixelsApiResponse.VideoWallpaperPixelsVideoListResponse>> = videoRepository.getVideosWithPaging().flow.cachedIn(viewModelScope)
+    fun getVideos() : Flow<PagingData<VideoDataProvider>> = videoRepository.getVideosWithPaging().flow.cachedIn(viewModelScope)
 
     fun fetchOnboardingData() {
         viewModelScope.launch(Dispatchers.IO) {

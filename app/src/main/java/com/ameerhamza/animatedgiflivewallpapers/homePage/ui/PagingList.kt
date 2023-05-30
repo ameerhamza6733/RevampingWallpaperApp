@@ -5,22 +5,25 @@ import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.paging.LoadState
+import androidx.paging.PagingData
 import androidx.paging.compose.collectAsLazyPagingItems
 import androidx.paging.compose.items
+import com.ameerhamza.animatedgiflivewallpapers.homePage.data.dataSources.MediaDataProvider
+import com.ameerhamza.animatedgiflivewallpapers.homePage.data.dataSources.VideoDataProvider
 import com.ameerhamza.animatedgiflivewallpapers.homePage.data.model.VideoWallpaperPixelsApiResponse
+import kotlinx.coroutines.flow.Flow
 
 @Composable
-fun PagingListScreen(viewModel: HomeScreenViewModel) {
-    val videos = viewModel.getVideos().collectAsLazyPagingItems()
+fun PagingListScreen(flowPagingData: Flow<PagingData<VideoDataProvider>>) {
+    val items = flowPagingData.collectAsLazyPagingItems()
     LazyColumn {
-        items(videos){
-            WallpaperItem(it!!)
+        items(items){item ->
+            item?.let{WallpaperItem(it)}
         }
     }
-
 }
 
 @Composable
-fun WallpaperItem(video:VideoWallpaperPixelsApiResponse.VideoWallpaperPixelsVideoListResponse){
-    Text(text = video.url)
+fun WallpaperItem(mediaDataProvider: MediaDataProvider){
+    Text(text = mediaDataProvider.label())
 }
