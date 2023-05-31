@@ -8,7 +8,7 @@ import com.ameerhamza.animatedgiflivewallpapers.homePage.data.model.VideoWallpap
 import com.ameerhamza.animatedgiflivewallpapers.homePage.data.servies.VideoWallpaperService
 import javax.inject.Inject
 
-class VideoRepository @Inject constructor(private val fakeVideoDataSource:VideoRemoteFakeDataSource, private val videoApiService: VideoWallpaperService) {
+class VideoRepository @Inject constructor(private val fakeVideoDataSource:VideoRemoteFakeDataSource, private val videoApiService: VideoWallpaperService) : MediaRepository {
 
     suspend fun getVideos(): Result<List<VideoWallpaperUi>?> {
         return try {
@@ -26,7 +26,8 @@ class VideoRepository @Inject constructor(private val fakeVideoDataSource:VideoR
         }
     }
 
-
-     fun getVideosWithPaging() = Pager(config = PagingConfig(pageSize = 20, maxSize = 100), pagingSourceFactory ={VideoRemotePagingSource(videoApiService)} )
+    override fun fetchPagedItems() = Pager(
+        config = PagingConfig(pageSize = 20, maxSize = 100),
+        pagingSourceFactory = { VideoRemotePagingSource(videoApiService) })
 
 }

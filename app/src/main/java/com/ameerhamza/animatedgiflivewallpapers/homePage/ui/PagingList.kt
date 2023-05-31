@@ -14,7 +14,7 @@ import com.ameerhamza.animatedgiflivewallpapers.homePage.data.model.VideoWallpap
 import kotlinx.coroutines.flow.Flow
 
 @Composable
-fun PagingListScreen(flowPagingData: Flow<PagingData<VideoDataProvider>>) {
+fun PagingListScreen(flowPagingData: Flow<PagingData<MediaDataProvider>>) {
     val items = flowPagingData.collectAsLazyPagingItems()
     LazyColumn {
         items(items){item ->

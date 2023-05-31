@@ -6,27 +6,27 @@ import com.ameerhamza.animatedgiflivewallpapers.homePage.data.model.VideoWallpap
 import com.ameerhamza.animatedgiflivewallpapers.homePage.data.servies.VideoWallpaperService
 import javax.inject.Inject
 
-class VideoRemotePagingSource (private val videoApiService: VideoWallpaperService) : PagingSource<String, VideoDataProvider>() {
+class VideoRemotePagingSource (private val videoApiService: VideoWallpaperService) : PagingSource<String, MediaDataProvider>() {
     override suspend fun load(
         params: LoadParams<String>
-    ): LoadResult<String, VideoDataProvider> {
-        try {
+    ): LoadResult<String, MediaDataProvider> {
+        return try {
 
             val postion = (params.key ?: "1")
             val response = videoApiService.getVideos("Cars")
-            return LoadResult.Page(
+            LoadResult.Page(
                 data = response.videos.map{VideoDataProvider(it)},
                 prevKey = if (postion=="1")  null else (postion.toInt()-1).toString(),
                 nextKey = if (postion.toInt()==response.totalResults) null else (postion.toInt()-1).toString()
             )
         } catch (e: Exception) {
-            return LoadResult.Error(e)
+            LoadResult.Error(e)
             // Handle errors in this block and return LoadResult.Error if it is an
             // expected error (such as a network failure).
         }
     }
 
-    override fun getRefreshKey(state: PagingState<String, VideoDataProvider>): String? {
+    override fun getRefreshKey(state: PagingState<String, MediaDataProvider>): String? {
         // Try to find the page key of the closest page to anchorPosition, from
         // either the prevKey or the nextKey, but you need to handle nullability
         // here:

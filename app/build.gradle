@@ -22,7 +22,9 @@ android {
             useSupportLibrary true
         }
         buildConfigField("String", "PEXELS_API_KEY", "${PEXELS_API_KEY}")
-
+        buildConfigField "String", "SHOW_API_URL", "\"http://api.duckduckgo.com/?q=simpsons+characters&format=json\""
+        buildConfigField "String", "SHOW_API_BASE_URL", "\"http://api.duckduckgo.com/\""
+        buildConfigField "String", "SHOW_IMAGE_BASE_URL", "\"http://duckduckgo.com/\""
 
     }
 
