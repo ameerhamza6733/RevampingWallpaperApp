@@ -6,37 +6,28 @@ import com.ameerhamza.animatedgiflivewallpapers.homePage.data.model.VideoWallpap
 import com.ameerhamza.animatedgiflivewallpapers.homePage.data.servies.VideoWallpaperService
 import javax.inject.Inject
 
-class VideoRemotePagingSource (private val videoApiService: VideoWallpaperService) : PagingSource<String, VideoWallpaperPixelsApiResponse.VideoWallpaperPixelsVideoListResponse>() {
-    override suspend fun load(
-        params: LoadParams<String>
-    ): LoadResult<String, VideoWallpaperPixelsApiResponse.VideoWallpaperPixelsVideoListResponse> {
-        try {
+class VideoRemotePagingSource (private val videoApiService: VideoWallpaperService, private val query:String) :
+    PagingSource<Int, VideoWallpaperPixelsApiResponse.VideoWallpaperPixelsVideoListResponse>() {
+    override fun getRefreshKey(state: PagingState<Int, VideoWallpaperPixelsApiResponse.VideoWallpaperPixelsVideoListResponse>): Int? {
+       return null
+    }
 
-            val postion = (params.key ?: "1")
-            val response = videoApiService.getVideos("Cars")
-            return LoadResult.Page(
-                data = response.videos,
-                prevKey = if (postion=="1")  null else (postion.toInt()-1).toString(),
-                nextKey = if (postion.toInt()==response.totalResults) null else (postion.toInt()-1).toString()
+    override suspend fun load(params: LoadParams<Int>): LoadResult<Int, VideoWallpaperPixelsApiResponse.VideoWallpaperPixelsVideoListResponse> {
+       return try {
+            val page = params.key?:1
+            val reponse = videoApiService.getVideos(query = query,
+            page = page)
+
+            LoadResult.Page(
+                data = reponse.videos,
+                prevKey = if (page > 1) page - 1 else null,
+                nextKey = if (reponse.nextPage != null) page + 1 else null
             )
-        } catch (e: Exception) {
-            return LoadResult.Error(e)
-            // Handle errors in this block and return LoadResult.Error if it is an
-            // expected error (such as a network failure).
+        }catch (e:Exception){
+            e.printStackTrace()
+            LoadResult.Error(e)
+
         }
     }
 
-    override fun getRefreshKey(state: PagingState<String, VideoWallpaperPixelsApiResponse.VideoWallpaperPixelsVideoListResponse>): String? {
-        // Try to find the page key of the closest page to anchorPosition, from
-        // either the prevKey or the nextKey, but you need to handle nullability
-        // here:
-        //  * prevKey == null -> anchorPage is the first page.
-        //  * nextKey == null -> anchorPage is the last page.
-        //  * both prevKey and nextKey null -> anchorPage is the initial page, so
-        //    just return null.
-        return state.anchorPosition?.let { anchorPosition ->
-            val anchorPage = state.closestPageToPosition(anchorPosition)
-            anchorPage?.prevKey?.toInt()?.plus(1)?.toString() ?: anchorPage?.nextKey?.toInt()?.minus(1).toString()
-        }
-    }
 }
