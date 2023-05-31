@@ -12,19 +12,16 @@ import javax.inject.Inject
 
 class VideoRepository @Inject constructor(private val videoApiService: VideoWallpaperService) {
 
-
     fun getVideosWithPaging(videoWallpaperRequest: VideoWallpaperRequest): Flow<PagingData<VideoWallpaperResponse>> {
         val config = PagingConfig(pageSize = 15)
-
         val source: PagingSource<Int, VideoWallpaperPixelsApiResponse.VideoWallpaperPixelsVideoListResponse> =
             when (1) {
                 0 -> VideoRemotePagingSource(videoApiService, videoWallpaperRequest.searchTerm)
                 1 -> VideoRemotePagingSource(videoApiService,videoWallpaperRequest.searchTerm)
                 else -> throw IllegalArgumentException("Invalid source index")
             }
-
-        return Pager(config) { source }.flow.map { pagingData-> pagingData.map { listOfWallpaperReponse->
-            VideoWallpaperResponse(image = listOfWallpaperReponse.image, url = listOfWallpaperReponse.url, id = listOfWallpaperReponse.id)
+        return Pager(config) { source }.flow.map { pagingData-> pagingData.map { pixelVideo->
+            VideoWallpaperResponse(image = pixelVideo.image, url = pixelVideo.url, id = pixelVideo.id)
         } }
     }
 
