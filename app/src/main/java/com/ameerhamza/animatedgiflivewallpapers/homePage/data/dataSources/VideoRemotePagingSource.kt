@@ -30,4 +30,7 @@ class VideoRemotePagingSource (private val videoApiService: VideoWallpaperServic
         }
     }
 
+    companion object{
+        val VIDEO_WALLPAPER_PIXEL= 0
+    }
 }

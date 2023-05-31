@@ -25,7 +25,7 @@ class HomeScreenViewModel @Inject constructor(private val videoRepository: Video
     ViewModel() {
 
 
-    fun getVideos() : Flow<PagingData<VideoWallpaperUi>> = videoRepository.getVideosWithPaging(
+    fun getVideos() : Flow<PagingData<VideoWallpaperUi>> = videoRepository.getVideosWithPaging(VideoRepository.DEFAULT_VIDEO_WALLPAPER_REMOTE_SOURCE,
         VideoWallpaperRequest("Nature")
     ).map { pagingData->
         pagingData.map { VideoWallpaperUi(thumbnail = it.image, duration = 0, videoUrl = it.url) }
