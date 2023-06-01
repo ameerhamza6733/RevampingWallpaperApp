@@ -8,7 +8,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import com.ameerhamza.animatedgiflivewallpapers.homePage.ui.HomeScreenViewModel
-import com.ameerhamza.animatedgiflivewallpapers.homePage.ui.PagingListScreen
+import com.ameerhamza.animatedgiflivewallpapers.homePage.ui.wallPaperList
 import com.ameerhamza.animatedgiflivewallpapers.splash.SplashScreen
 import com.ameerhamza.animatedgiflivewallpapers.ui.screen.OnboardingScreens
 
@@ -37,7 +37,7 @@ fun setupNavigation(
         }
         composable(NavDestination.HOME_SCREEN){
             val viewModel = hiltViewModel<HomeScreenViewModel>()
-            PagingListScreen(viewModel.getItems())
+            wallPaperList(viewModel)
         }
     }
 }
