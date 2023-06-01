@@ -1,34 +1,26 @@
 package com.ameerhamza.animatedgiflivewallpapers.splash
 
+import android.util.Log
 import androidx.compose.animation.core.*
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
 import androidx.compose.runtime.*
-import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
-import androidx.navigation.NavController
 import com.ameerhamza.animatedgiflivewallpapers.R
-import com.ameerhamza.animatedgiflivewallpapers.comman.ui.component.navigateToHomeScreen
-import com.ameerhamza.animatedgiflivewallpapers.comman.ui.component.navigateToOnboarding
-import com.ameerhamza.animatedgiflivewallpapers.onbording.ui.viewModel.OnboardingViewModel
 import com.bumptech.glide.integration.compose.ExperimentalGlideComposeApi
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalGlideComposeApi::class)
 @Composable
-fun SplashScreen(
-    navController: NavController,
-    onboardingViewModel: OnboardingViewModel
-) {
+fun SplashScreen() {
     val coroutineScope = rememberCoroutineScope()
     var imageSizeState by remember { mutableStateOf(ImageSizeState.Small) }
     var isImageRendered by remember { mutableStateOf(false) } // Track if the Image is rendered
 
-    val onboardingCompleted by onboardingViewModel.isOnboardingCompleted.observeAsState(false)
     val transition = updateTransition(targetState = imageSizeState, label = "ImageSizeChangeTransition")
     val imageSize by transition.animateDp(
         label = "ImageSizeAnimation",
@@ -46,15 +38,12 @@ fun SplashScreen(
         }
     }
 
+    Log.d("Calls", "SplashScreen composable")
     LaunchedEffect(Unit) {
+        Log.d("Calls", "SplashScreen LaunchedEffect START")
         coroutineScope.launch {
             imageSizeState = ImageSizeState.Large
             delay(2000)
-            if (onboardingCompleted) {
-                navigateToHomeScreen(navController)
-            } else {
-                navigateToOnboarding(navController)
-            }
         }
     }
 
@@ -71,7 +60,7 @@ fun SplashScreen(
             )
             LaunchedEffect(imageSizeState) {
                 coroutineScope.launch {
-                  delay(1500)
+                    delay(1500)
                     if (imageSizeState == ImageSizeState.Large) {
                         isImageRendered = true
                     }
@@ -80,7 +69,7 @@ fun SplashScreen(
             }
         }
         if (isImageRendered) {
-            AnimatedTextView(text = "GIFy")
+            AnimatedTextView(text = "GIF")
         }
     }
 }
