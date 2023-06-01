@@ -44,6 +44,7 @@ object VideoServiceModule {
             .build()
     }
 
+
     @Provides
     @Singleton
     fun provideApiService(retrofit: Retrofit): VideoWallpaperService {

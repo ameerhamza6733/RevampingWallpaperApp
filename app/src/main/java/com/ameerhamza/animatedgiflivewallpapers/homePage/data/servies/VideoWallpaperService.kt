@@ -8,7 +8,8 @@ interface VideoWallpaperService {
     @GET("search")
     suspend fun getVideos(
         @Query("query") query: String,
-        @Query("page") page:Int
+        @Query("page") page:Int,
+        @Query("orientation") orientation:String,
     ): VideoWallpaperPixelsApiResponse
 }
 

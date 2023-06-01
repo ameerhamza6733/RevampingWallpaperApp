@@ -16,7 +16,8 @@ class VideoRemotePagingSource (private val videoApiService: VideoWallpaperServic
        return try {
             val page = params.key?:1
             val reponse = videoApiService.getVideos(query = query,
-            page = page)
+            page = page,
+            orientation = "portrait")
 
             LoadResult.Page(
                 data = reponse.videos,
