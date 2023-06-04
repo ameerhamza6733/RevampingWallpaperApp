@@ -31,8 +31,6 @@ fun wallPaperList(viewModel: HomeScreenViewModel) {
             wallpaperItem(wallpaperList[index]!!)
         }
     }
-
-
 }
 
 @OptIn(ExperimentalGlideComposeApi::class)

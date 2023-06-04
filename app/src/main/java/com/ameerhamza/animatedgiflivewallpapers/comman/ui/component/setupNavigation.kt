@@ -1,6 +1,7 @@
 package com.ameerhamza.animatedgiflivewallpapers.comman.ui.component
 
 
+import android.util.Log
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.runtime.Composable
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -28,16 +29,20 @@ fun setupNavigation(
 ) {
     NavHost(navController, startDestination = startDestination) {
         composable(NavDestination.SPLASH_SCREEN) {
+            Log.d("Calls", "Navigating to SplashScreen")
             SplashScreen()
         }
         composable(NavDestination.ONBOARDING_SCREEN) {
+            Log.d("Calls", "Navigating to OnboardingScreens")
             OnboardingScreens(mainViewModel.onboardingRepository.onboardingItems){
                 mainViewModel.onboardingCompleted()
             }
         }
         composable(NavDestination.HOME_SCREEN){
+            Log.d("Calls", "Navigating to wallPaperList")
             val viewModel = hiltViewModel<HomeScreenViewModel>()
             wallPaperList(viewModel)
         }
     }
+    Log.d("Calls", "SetupNavigation commented out")
 }
