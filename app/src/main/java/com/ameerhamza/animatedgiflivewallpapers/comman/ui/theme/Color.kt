@@ -9,3 +9,4 @@ val Teal200 = Color(0xFF03DAC5)
 
 val backgroundDark = Color(0xFF040610)
 val buttonColor = Color(0xFF4A50DA)
+val yallowColorEC9718 = Color(0xFFEC9718)
