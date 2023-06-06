@@ -109,13 +109,19 @@ android {
         implementation 'com.squareup.retrofit2:converter-gson:2.9.0'
         implementation 'com.squareup.okhttp3:logging-interceptor:4.11.0'
 
-        //pageing 3
+        //paging 3
         implementation("androidx.paging:paging-runtime:3.1.1")
         implementation "androidx.paging:paging-compose:1.0.0-alpha17"
 
         //firebase
         implementation 'com.google.firebase:firebase-firestore-ktx:24.6.0'
 
+        // Ads & Billing
+        def billing_version = "5.0.0"
+
+        implementation 'com.google.android.gms:play-services-ads:22.1.0'
+        implementation("com.android.billingclient:billing:$billing_version")
+        implementation("com.android.billingclient:billing-ktx:$billing_version")
 
     }
 

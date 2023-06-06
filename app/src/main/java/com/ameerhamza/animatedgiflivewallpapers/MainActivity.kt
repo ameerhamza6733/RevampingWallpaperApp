@@ -12,6 +12,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
@@ -28,7 +29,6 @@ class MainActivity : ComponentActivity() {
     private val viewModel by viewModels<HomeScreenViewModel>()
     override fun onCreate(savedInstanceState: Bundle?) {
         val splashScreen = installSplashScreen()
-
         splashScreen.setKeepOnScreenCondition { !viewModel.dismissSplash }
 
         super.onCreate(savedInstanceState)
@@ -44,7 +44,7 @@ class MainActivity : ComponentActivity() {
                     val navController = rememberNavController()
 
                     setupNavigation(navController, NavDestination.ONBOARDING_SCREEN, viewModel)
-                    viewModel.startup()
+                    viewModel.startup(LocalContext.current)
                     showCurrentScreen(viewModel, navController)
                 }
             }
