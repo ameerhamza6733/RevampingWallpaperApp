@@ -1,15 +1,12 @@
 package com.ameerhamza.animatedgiflivewallpapers.homePage.ui
 
-import android.content.Context
 import android.util.Log
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.paging.PagingData
 import androidx.paging.cachedIn
 import androidx.paging.map
-import com.ameerhamza.animatedgiflivewallpapers.comman.AppPrefs
+import com.ameerhamza.animatedgiflivewallpapers.comman.di.AppPrefs
 import com.ameerhamza.animatedgiflivewallpapers.homePage.data.model.MediaType
 import com.ameerhamza.animatedgiflivewallpapers.homePage.data.model.VideoWallpaperRequest
 import com.ameerhamza.animatedgiflivewallpapers.homePage.data.model.WallpaperUi
@@ -18,19 +15,16 @@ import com.ameerhamza.animatedgiflivewallpapers.homePage.state.MainScreenState
 import com.ameerhamza.animatedgiflivewallpapers.onbording.data.repository.OnboardingRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.runBlocking
 import javax.inject.Inject
 
 @HiltViewModel
 class HomeScreenViewModel @Inject constructor(
     private val videoRepository: VideoRepository,
-    val onboardingRepository: OnboardingRepository,
-    private val appPrefs : AppPrefs
+    val onboardingRepository: OnboardingRepository
 ) :
     ViewModel() {
 
@@ -58,17 +52,19 @@ class HomeScreenViewModel @Inject constructor(
     }
 
     fun startup() {
-        if (!appPrefs.isOnboardingCompleted)
-            fetchOnboardingData()
-        else {
-            dismissSplash = true
-            mainScreenState.value = MainScreenState.Home
+        viewModelScope.launch {
+            if (!onboardingRepository.isOnboardingCompleted().await())
+                fetchOnboardingData()
+            else {
+                dismissSplash = true
+                mainScreenState.value = MainScreenState.Home
+            }
         }
     }
 
     fun onboardingCompleted() {
-        viewModelScope.launch {
-            appPrefs.saveOnboardingCompleted()
+        viewModelScope.launch(Dispatchers.IO) {
+            onboardingRepository.saveOnboardingCompleted()
         }
         mainScreenState.value = MainScreenState.Home
     }
