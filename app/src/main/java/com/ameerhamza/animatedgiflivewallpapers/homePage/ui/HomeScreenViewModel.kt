@@ -58,7 +58,7 @@ class HomeScreenViewModel @Inject constructor(
             var onboardingComplete = onboardingRepository.isOnboardingCompleted().await()
             Log.d("Calls", "onboardingComplete = $onboardingComplete")
             if (!onboardingComplete) {
-                fetchOnboardingData().await()
+                fetchOnboardingData()
                 Log.d("Calls", "returned from fetchOnboardingData()")
             } else {
                 onboardingComplete = true
@@ -86,17 +86,16 @@ class HomeScreenViewModel @Inject constructor(
         mainScreenState.value = MainScreenState.Home
     }
 
-    private suspend fun fetchOnboardingData(): Deferred<Boolean> = viewModelScope.async {
-        Log.d("Calls", "fetchOnboardingData called")
-        viewModelScope.launch(Dispatchers.IO) {
+    private suspend fun fetchOnboardingData() {
+        viewModelScope.async {
+            Log.d("Calls", "fetchOnboardingData called")
             onboardingRepository.fetchOnboardingItems()
             Log.d(
                 "Calls",
                 "onboarding items retrieved: ${onboardingRepository.onboardingItems.size}"
             )
-        }
-
-        return@async true
+            return@async true
+        }.await()
     }
 
     companion object {
