@@ -28,10 +28,6 @@ fun setupNavigation(
     mainViewModel: HomeScreenViewModel
 ) {
     NavHost(navController, startDestination = startDestination) {
-        composable(NavDestination.SPLASH_SCREEN) {
-            Log.d("Calls", "Navigating to SplashScreen")
-            SplashScreen()
-        }
         composable(NavDestination.ONBOARDING_SCREEN) {
             Log.d("Calls", "Navigating to OnboardingScreens")
             OnboardingScreens(mainViewModel.onboardingRepository.onboardingItems){
@@ -40,9 +36,7 @@ fun setupNavigation(
         }
         composable(NavDestination.HOME_SCREEN){
             Log.d("Calls", "Navigating to wallPaperList")
-            val viewModel = hiltViewModel<HomeScreenViewModel>()
-            wallPaperList(viewModel)
+            wallPaperList(mainViewModel)
         }
     }
-    Log.d("Calls", "SetupNavigation commented out")
 }

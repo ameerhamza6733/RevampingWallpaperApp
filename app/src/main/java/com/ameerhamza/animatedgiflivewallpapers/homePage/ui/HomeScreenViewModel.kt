@@ -29,7 +29,7 @@ import javax.inject.Inject
 class HomeScreenViewModel @Inject constructor(
     private val videoRepository: VideoRepository,
     val onboardingRepository: OnboardingRepository,
-    val appPrefs : AppPrefs
+    private val appPrefs : AppPrefs
 ) :
     ViewModel() {
 
@@ -64,7 +64,7 @@ class HomeScreenViewModel @Inject constructor(
             onboardingRepository.fetchOnboardingItems()
             dismissSplash = true
             Log.d("Calls", "onboarding items retrieved: ${onboardingRepository.onboardingItems.size}")
-            mainScreenState.value = MainScreenState.Onboarding(onboardingRepository.onboardingItems)
+//            mainScreenState.value = MainScreenState.Onboarding(onboardingRepository.onboardingItems)
         }
     }
 }

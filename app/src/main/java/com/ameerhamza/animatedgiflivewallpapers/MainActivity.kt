@@ -15,7 +15,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.core.splashscreen.SplashScreen
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
+import androidx.navigation.NavController
+import androidx.navigation.compose.rememberNavController
 import com.ameerhamza.animatedgiflivewallpapers.comman.Utils
+import com.ameerhamza.animatedgiflivewallpapers.comman.ui.component.NavDestination
+import com.ameerhamza.animatedgiflivewallpapers.comman.ui.component.setupNavigation
 import com.ameerhamza.animatedgiflivewallpapers.comman.ui.theme.MyApplicationTheme
 import com.ameerhamza.animatedgiflivewallpapers.homePage.state.MainScreenState
 import com.ameerhamza.animatedgiflivewallpapers.homePage.ui.HomeScreenViewModel
@@ -40,8 +44,12 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colors.background
                 ) {
+
+                    val navController = rememberNavController()
+
+                    setupNavigation(navController, NavDestination.ONBOARDING_SCREEN, viewModel)
                     viewModel.startup()
-                    showCurrentScreen(viewModel)
+                    showCurrentScreen(viewModel, navController)
                 }
             }
         }
@@ -49,18 +57,17 @@ class MainActivity : ComponentActivity() {
 }
 
 @Composable
-fun showCurrentScreen(viewModel: HomeScreenViewModel) {
+fun showCurrentScreen(viewModel: HomeScreenViewModel, navigator: NavController) {
     val state by viewModel.mainScreenState.collectAsState()
 
     Log.d("Calls", "showMainScreen with $state")
-    // App always starts with Splash screen which is the startDestination in NavController
     when (state) {
         is MainScreenState.Onboarding -> {
-            OnboardingScreens((state as MainScreenState.Onboarding).items){
-                viewModel.onboardingCompleted()
-            }
+            navigator.popBackStack()
+            navigator.navigate(NavDestination.ONBOARDING_SCREEN)
         }
         is MainScreenState.Home -> {
+            navigator.navigate(NavDestination.HOME_SCREEN)
             wallPaperList(viewModel)
         }
     }
