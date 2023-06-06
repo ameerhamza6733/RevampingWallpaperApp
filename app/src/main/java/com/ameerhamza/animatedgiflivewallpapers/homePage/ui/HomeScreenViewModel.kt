@@ -8,12 +8,13 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.paging.PagingData
 import androidx.paging.cachedIn
-import com.ameerhamza.animatedgiflivewallpapers.homePage.state.MainScreenState
 import androidx.paging.map
 import com.ameerhamza.animatedgiflivewallpapers.comman.AppPrefs
+import com.ameerhamza.animatedgiflivewallpapers.homePage.data.model.MediaType
 import com.ameerhamza.animatedgiflivewallpapers.homePage.data.model.VideoWallpaperRequest
-import com.ameerhamza.animatedgiflivewallpapers.homePage.data.model.VideoWallpaperUi
+import com.ameerhamza.animatedgiflivewallpapers.homePage.data.model.WallpaperUi
 import com.ameerhamza.animatedgiflivewallpapers.homePage.data.repo.VideoRepository
+import com.ameerhamza.animatedgiflivewallpapers.homePage.state.MainScreenState
 import com.ameerhamza.animatedgiflivewallpapers.onbording.data.repository.OnboardingRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
@@ -36,11 +37,25 @@ class HomeScreenViewModel @Inject constructor(
     var mainScreenState = MutableStateFlow<MainScreenState>(MainScreenState.Splash)
     var dismissSplash = false
 
-    fun getVideos() : Flow<PagingData<VideoWallpaperUi>> = videoRepository.getVideosWithPaging(VideoRepository.DEFAULT_VIDEO_WALLPAPER_REMOTE_SOURCE,
-        VideoWallpaperRequest("Nature")
-    ).map { pagingData->
-        pagingData.map { VideoWallpaperUi(thumbnail = it.image, duration = 0, videoUrl = it.url) }
-    }.cachedIn(viewModelScope)
+
+
+    fun getWallpapers(): Flow<PagingData<WallpaperUi>> {
+
+        Log.d(TAG, "loading the data")
+        return videoRepository.getVideosWithPaging(
+            VideoRepository.DEFAULT_VIDEO_WALLPAPER_REMOTE_SOURCE,
+            VideoWallpaperRequest("Nature")
+        ).map { pagingData ->
+            pagingData.map {
+                WallpaperUi(
+                    thumbnail = it.image,
+                    duration = 0,
+                    url = it.url,
+                    MediaType.VIDEO
+                )
+            }
+        }.cachedIn(viewModelScope)
+    }
 
     fun startup() {
         if (!appPrefs.isOnboardingCompleted)
@@ -63,8 +78,14 @@ class HomeScreenViewModel @Inject constructor(
         viewModelScope.launch(Dispatchers.IO) {
             onboardingRepository.fetchOnboardingItems()
             dismissSplash = true
-            Log.d("Calls", "onboarding items retrieved: ${onboardingRepository.onboardingItems.size}")
-//            mainScreenState.value = MainScreenState.Onboarding(onboardingRepository.onboardingItems)
+            Log.d(
+                "Calls",
+                "onboarding items retrieved: ${onboardingRepository.onboardingItems.size}"
+            )
         }
+    }
+
+    companion object {
+        private val TAG = " HomeScreenViewModelTAG"
     }
 }

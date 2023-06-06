@@ -12,19 +12,15 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
-import androidx.core.splashscreen.SplashScreen
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
-import com.ameerhamza.animatedgiflivewallpapers.comman.Utils
 import com.ameerhamza.animatedgiflivewallpapers.comman.ui.component.NavDestination
 import com.ameerhamza.animatedgiflivewallpapers.comman.ui.component.setupNavigation
 import com.ameerhamza.animatedgiflivewallpapers.comman.ui.theme.MyApplicationTheme
 import com.ameerhamza.animatedgiflivewallpapers.homePage.state.MainScreenState
 import com.ameerhamza.animatedgiflivewallpapers.homePage.ui.HomeScreenViewModel
-import com.ameerhamza.animatedgiflivewallpapers.homePage.ui.wallPaperList
-import com.ameerhamza.animatedgiflivewallpapers.ui.screen.OnboardingScreens
+import com.ameerhamza.animatedgiflivewallpapers.homePage.ui.componets.wallPaperList
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -68,7 +64,6 @@ fun showCurrentScreen(viewModel: HomeScreenViewModel, navigator: NavController) 
         }
         is MainScreenState.Home -> {
             navigator.navigate(NavDestination.HOME_SCREEN)
-            wallPaperList(viewModel)
         }
     }
 }
