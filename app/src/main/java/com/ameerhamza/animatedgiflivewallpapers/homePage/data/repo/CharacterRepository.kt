@@ -3,9 +3,9 @@ import android.util.Log
 import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import com.ameerhamza.animatedgiflivewallpapers.BuildConfig
-import com.ameerhamza.animatedgiflivewallpapers.homePage.data.dataSources.tvshowcharacters.ApiInterface
+import com.ameerhamza.animatedgiflivewallpapers.homePage.data.dataSources.tvshowcharacters.DuckDuckGoCharactersApiService
 import com.ameerhamza.animatedgiflivewallpapers.homePage.data.dataSources.tvshowcharacters.CharactersRemotePagingSource
-import com.ameerhamza.animatedgiflivewallpapers.homePage.data.dataSources.tvshowcharacters.RetrofitClient
+import com.ameerhamza.animatedgiflivewallpapers.homePage.data.dataSources.tvshowcharacters.ShowCharacterServiceModule
 import com.ameerhamza.animatedgiflivewallpapers.homePage.data.dataSources.tvshowcharacters.model.ShowCharacter
 import com.ameerhamza.animatedgiflivewallpapers.homePage.data.dataSources.tvshowcharacters.model.ShowCharacters
 import com.ameerhamza.animatedgiflivewallpapers.homePage.data.dataSources.tvshowcharacters.model.emptyCast
@@ -15,8 +15,8 @@ import javax.inject.Inject
 
 
 class CharacterRepository @Inject constructor()  : MediaRepository{
-    private var retrofit = RetrofitClient.getInstance()
-    private var apiInterface: ApiInterface = retrofit.create(ApiInterface::class.java)
+    private var retrofit = ShowCharacterServiceModule.provideRetrofitForDuckDuckGoShow()
+    private var apiInterface: DuckDuckGoCharactersApiService = retrofit.create(DuckDuckGoCharactersApiService::class.java)
 
     var showCharacters = ShowCharacters("Unspecified", emptyList())
 
@@ -45,9 +45,9 @@ class CharacterRepository @Inject constructor()  : MediaRepository{
 
     fun getCharactersWithPaging() = Pager(
         config = PagingConfig(pageSize = 20, maxSize = 100),
-        pagingSourceFactory = { CharactersRemotePagingSource() })
+        pagingSourceFactory = { CharactersRemotePagingSource(apiInterface) })
 
     override fun fetchPagedItems() = Pager (
             config = PagingConfig(pageSize = 20, maxSize = 100),
-            pagingSourceFactory = { CharactersRemotePagingSource() })
+            pagingSourceFactory = { CharactersRemotePagingSource(apiInterface) })
 }

@@ -5,7 +5,7 @@ import retrofit2.Response
 import retrofit2.http.GET
 import retrofit2.http.Url
 
-interface ApiInterface {
+interface DuckDuckGoCharactersApiService {
     @GET("")
     suspend fun getCast(
         @Url url: String,

@@ -12,6 +12,8 @@ import com.ameerhamza.animatedgiflivewallpapers.comman.di.AppPrefs
 import com.ameerhamza.animatedgiflivewallpapers.homePage.data.dataSources.MediaDataProvider
 import com.ameerhamza.animatedgiflivewallpapers.homePage.data.dataSources.VideoRemotePagingSource
 import com.ameerhamza.animatedgiflivewallpapers.homePage.data.dataSources.tvshowcharacters.CharactersRemotePagingSource
+import com.ameerhamza.animatedgiflivewallpapers.homePage.data.dataSources.tvshowcharacters.DuckDuckGoCharactersApiService
+import com.ameerhamza.animatedgiflivewallpapers.homePage.data.dataSources.tvshowcharacters.ShowCharacterServiceModule
 import com.ameerhamza.animatedgiflivewallpapers.homePage.data.model.MediaType
 import com.ameerhamza.animatedgiflivewallpapers.homePage.data.model.VideoWallpaperRequest
 import com.ameerhamza.animatedgiflivewallpapers.homePage.data.model.WallpaperUi
@@ -44,7 +46,7 @@ class HomeScreenViewModel @Inject constructor(
     lateinit var charactersRepository: CharacterRepository
 
     fun getWallpapers(): Flow<PagingData<WallpaperUi>> {
-//        val flow = getMediaFromVideoSource()
+//        return getMediaFromVideoSource()
         return getMediaFromPhotoSourceWithPaging()
 
     }
@@ -57,7 +59,11 @@ class HomeScreenViewModel @Inject constructor(
             prefetchDistance = 0,
         )
 
+        var retrofit = ShowCharacterServiceModule.provideRetrofitForDuckDuckGoShow()
+        var apiService = retrofit.create(DuckDuckGoCharactersApiService::class.java)
+
         val charactersRemoteDataSource = CharactersRemotePagingSource(
+            apiService
         )
 
         return Pager(config) {

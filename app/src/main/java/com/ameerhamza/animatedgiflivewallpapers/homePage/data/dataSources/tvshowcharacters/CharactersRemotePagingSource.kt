@@ -8,9 +8,9 @@ import com.ameerhamza.animatedgiflivewallpapers.homePage.data.dataSources.MediaD
 import com.ameerhamza.animatedgiflivewallpapers.homePage.data.dataSources.tvshowcharacters.model.ShowCharacter
 import com.ameerhamza.animatedgiflivewallpapers.homePage.data.dataSources.tvshowcharacters.model.emptyCast
 
-class CharactersRemotePagingSource : PagingSource<String, MediaDataProvider>() {
-    var retrofit = RetrofitClient.getInstance()
-    var apiInterface = retrofit.create(ApiInterface::class.java)
+class CharactersRemotePagingSource(private val apiService: DuckDuckGoCharactersApiService) : PagingSource<String, MediaDataProvider>() {
+//    var retrofit = ShowCharacterServiceModule.provideRetrofitForDuckDuckGoShow()
+//    var apiInterface = retrofit.create(DuckDuckGoCharactersApiService::class.java)
 
     var showCharacters: List<CharacterDataProvider> = emptyList()
 
@@ -19,19 +19,18 @@ class CharactersRemotePagingSource : PagingSource<String, MediaDataProvider>() {
     ): LoadResult<String, MediaDataProvider> {
         return try {
             val position = (params.key ?: "1")
-            val response = apiInterface.getCast(BuildConfig.SHOW_API_URL)
+            val response = apiService.getCast(BuildConfig.SHOW_API_URL)
             if (response.isSuccessful) {
                 var cast = response.body() ?: emptyCast
                 if (cast.RelatedTopics.isNotEmpty()) {
 
-                    val filtered = cast.RelatedTopics.filter{
+                    showCharacters = cast.RelatedTopics.filter{
                         it.Icon.URL.isNotEmpty()
-                    }
-                    showCharacters = filtered.map {
+                    }.map {
                         val parts = it.FirstURL.split('/')
                         CharacterDataProvider(ShowCharacter(parts.last(), it.Text, it.Icon.URL))
                     }
-                    Log.d("Calls", "${showCharacters.size} Simpson Characters used")
+                    Log.d("Calls", "${showCharacters.size} Simpson Characters used out of ${cast.RelatedTopics.size}")
                 }
                 Log.e(
                     "CharPagingSource.load",
