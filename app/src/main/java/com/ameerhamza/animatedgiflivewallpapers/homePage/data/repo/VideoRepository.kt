@@ -32,13 +32,7 @@ class VideoRepository @Inject constructor(private val videoApiService: VideoWall
 
         return Pager(config) {
             videoRemoteDataSource
-        }
-//            .flow.map { pagingData ->
-//                pagingData.map { pixelVideo ->
-//                    pixelVideo.toVideoWallpaperResponse()
-//                }
-//            }
-            .flow
+        }.flow
     }
 
     companion object {

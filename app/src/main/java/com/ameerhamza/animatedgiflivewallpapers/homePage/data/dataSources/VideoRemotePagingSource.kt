@@ -16,7 +16,7 @@ class VideoRemotePagingSource (private val videoApiService: VideoWallpaperServic
 
     override suspend fun load(
         params: LoadParams<Int>
-    ): PagingSource.LoadResult<Int, MediaDataProvider> {
+    ): LoadResult<Int, MediaDataProvider> {
        return try {
             val page = params.key?:1
             val reponse = videoApiService.getVideos(perPage= params.loadSize,
@@ -24,7 +24,7 @@ class VideoRemotePagingSource (private val videoApiService: VideoWallpaperServic
             page = page,
             orientation = "portrait")
 
-            PagingSource.LoadResult.Page(
+            LoadResult.Page(
 //                data = reponse.videos,
                 data = reponse.videos.map{VideoDataProvider(it)},
 

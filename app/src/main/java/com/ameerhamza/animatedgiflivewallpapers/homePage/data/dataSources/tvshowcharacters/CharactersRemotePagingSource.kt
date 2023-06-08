@@ -4,10 +4,11 @@ import android.util.Log
 import androidx.paging.PagingSource
 import androidx.paging.PagingState
 import com.ameerhamza.animatedgiflivewallpapers.BuildConfig
+import com.ameerhamza.animatedgiflivewallpapers.homePage.data.dataSources.MediaDataProvider
 import com.ameerhamza.animatedgiflivewallpapers.homePage.data.dataSources.tvshowcharacters.model.ShowCharacter
 import com.ameerhamza.animatedgiflivewallpapers.homePage.data.dataSources.tvshowcharacters.model.emptyCast
 
-class CharactersRemotePagingSource : PagingSource<String, CharacterDataProvider>() {
+class CharactersRemotePagingSource : PagingSource<String, MediaDataProvider>() {
     var retrofit = RetrofitClient.getInstance()
     var apiInterface = retrofit.create(ApiInterface::class.java)
 
@@ -15,24 +16,29 @@ class CharactersRemotePagingSource : PagingSource<String, CharacterDataProvider>
 
     override suspend fun load(
         params: LoadParams<String>
-    ): LoadResult<String, CharacterDataProvider> {
+    ): LoadResult<String, MediaDataProvider> {
         return try {
             val position = (params.key ?: "1")
             val response = apiInterface.getCast(BuildConfig.SHOW_API_URL)
             if (response.isSuccessful) {
                 var cast = response.body() ?: emptyCast
                 if (cast.RelatedTopics.isNotEmpty()) {
-                    showCharacters = cast.RelatedTopics.map {
+
+                    val filtered = cast.RelatedTopics.filter{
+                        it.Icon.URL.isNotEmpty()
+                    }
+                    showCharacters = filtered.map {
                         val parts = it.FirstURL.split('/')
                         CharacterDataProvider(ShowCharacter(parts.last(), it.Text, it.Icon.URL))
                     }
+                    Log.d("Calls", "${showCharacters.size} Simpson Characters used")
                 }
                 Log.e(
                     "CharPagingSource.load",
                     "Fetched ${showCharacters.size} characters from cast of Simpsons"
                 )
             }
-            return LoadResult.Page(
+            LoadResult.Page(
                 data = showCharacters,
                 prevKey = if (position=="1")  null else (position.toInt()-1).toString(),
 // We are fetching all Simpson characters at once
@@ -48,7 +54,7 @@ class CharactersRemotePagingSource : PagingSource<String, CharacterDataProvider>
         }
     }
 
-    override fun getRefreshKey(state: PagingState<String, CharacterDataProvider>): String? {
+    override fun getRefreshKey(state: PagingState<String, MediaDataProvider>): String? {
         // Try to find the page key of the closest page to anchorPosition, from
         // either the prevKey or the nextKey, but you need to handle nullability
         // here:

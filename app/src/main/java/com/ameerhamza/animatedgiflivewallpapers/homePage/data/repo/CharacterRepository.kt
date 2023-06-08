@@ -14,7 +14,7 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 
-class CharacterRepository @Inject constructor() { // : MediaRepository{
+class CharacterRepository @Inject constructor()  : MediaRepository{
     private var retrofit = RetrofitClient.getInstance()
     private var apiInterface: ApiInterface = retrofit.create(ApiInterface::class.java)
 
@@ -47,7 +47,7 @@ class CharacterRepository @Inject constructor() { // : MediaRepository{
         config = PagingConfig(pageSize = 20, maxSize = 100),
         pagingSourceFactory = { CharactersRemotePagingSource() })
 
-    /*override*/ fun fetchPagedItems() = Pager (
+    override fun fetchPagedItems() = Pager (
             config = PagingConfig(pageSize = 20, maxSize = 100),
             pagingSourceFactory = { CharactersRemotePagingSource() })
 }
