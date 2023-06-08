@@ -7,7 +7,8 @@ import com.ameerhamza.animatedgiflivewallpapers.homePage.data.model.VideoWallpap
 
 class CharacterDataProvider(private val item: ShowCharacter) :
     MediaDataProvider {
-    override fun label(): String {
-        return item.name
-    }
+    override var url: String = ""
+        get(){return item.iconUrl}
+    override var image: String = ""
+        get() {return item.name}
 }

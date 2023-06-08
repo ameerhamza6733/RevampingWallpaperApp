@@ -34,8 +34,6 @@ fun wallPaperList(wallpaperList: LazyPagingItems<WallpaperUi>, modifier: Modifie
             wallpaperItem(wallpaperList[index]!!)
         }
     }
-
-
 }
 
 @OptIn(ExperimentalGlideComposeApi::class)

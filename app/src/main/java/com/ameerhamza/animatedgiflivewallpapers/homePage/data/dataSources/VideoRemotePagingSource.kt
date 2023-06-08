@@ -7,12 +7,16 @@ import com.ameerhamza.animatedgiflivewallpapers.homePage.data.servies.VideoWallp
 import javax.inject.Inject
 
 class VideoRemotePagingSource (private val videoApiService: VideoWallpaperService, private val query:String) :
-    PagingSource<Int, VideoWallpaperPixelsApiResponse.VideoWallpaperPixelsVideoListResponse>() {
-    override fun getRefreshKey(state: PagingState<Int, VideoWallpaperPixelsApiResponse.VideoWallpaperPixelsVideoListResponse>): Int? {
+    PagingSource<Int, MediaDataProvider>() {
+
+//class VideoRemotePagingSource (private val videoApiService: VideoWallpaperService) : PagingSource<Int, MediaDataProvider>() {
+    override fun getRefreshKey(state: PagingState<Int, MediaDataProvider>): Int? {
        return null
     }
 
-    override suspend fun load(params: LoadParams<Int>): LoadResult<Int, VideoWallpaperPixelsApiResponse.VideoWallpaperPixelsVideoListResponse> {
+    override suspend fun load(
+        params: LoadParams<Int>
+    ): PagingSource.LoadResult<Int, MediaDataProvider> {
        return try {
             val page = params.key?:1
             val reponse = videoApiService.getVideos(perPage= params.loadSize,
@@ -20,15 +24,16 @@ class VideoRemotePagingSource (private val videoApiService: VideoWallpaperServic
             page = page,
             orientation = "portrait")
 
-            LoadResult.Page(
-                data = reponse.videos,
+            PagingSource.LoadResult.Page(
+//                data = reponse.videos,
+                data = reponse.videos.map{VideoDataProvider(it)},
+
                 prevKey = if (page > 1) page - 1 else null,
                 nextKey = if (reponse.nextPage != null) page + 1 else null
             )
         }catch (e:Exception){
             e.printStackTrace()
-            LoadResult.Error(e)
-
+            PagingSource.LoadResult.Error(e)
         }
     }
 

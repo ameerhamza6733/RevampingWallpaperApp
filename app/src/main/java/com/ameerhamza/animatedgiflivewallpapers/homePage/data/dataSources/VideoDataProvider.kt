@@ -4,7 +4,8 @@ import com.ameerhamza.animatedgiflivewallpapers.homePage.data.model.VideoWallpap
 
 class VideoDataProvider(private val item: VideoWallpaperPixelsApiResponse.VideoWallpaperPixelsVideoListResponse) :
     MediaDataProvider {
-    override fun label(): String {
-        return item.url
-    }
+    override var image: String = ""
+        get() {return item.image}
+    override var url: String = ""
+        get() {return item.url}
 }
