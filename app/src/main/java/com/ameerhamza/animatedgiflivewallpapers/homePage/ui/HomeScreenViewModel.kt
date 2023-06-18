@@ -46,8 +46,8 @@ class HomeScreenViewModel @Inject constructor(
     lateinit var charactersRepository: CharacterRepository
 
     fun getWallpapers(): Flow<PagingData<WallpaperUi>> {
-//        return getMediaFromVideoSource()
-        return getMediaFromPhotoSourceWithPaging()
+        return getMediaFromVideoSource()
+//        return getMediaFromPhotoSourceWithPaging()
 
     }
 
