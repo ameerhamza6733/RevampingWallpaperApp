@@ -58,6 +58,7 @@ class HomeScreenViewModel @Inject constructor(
             else {
                 dismissSplash = true
                 mainScreenState.value = MainScreenState.Home
+                Log.d("Calls", "mainScreenState set to Home in startup()")
             }
         }
     }
@@ -67,6 +68,7 @@ class HomeScreenViewModel @Inject constructor(
             onboardingRepository.saveOnboardingCompleted()
         }
         mainScreenState.value = MainScreenState.Home
+        Log.d("Calls", "mainScreenState set to Home in onboardingComplete()")
     }
 
     private fun fetchOnboardingData() {
@@ -76,8 +78,9 @@ class HomeScreenViewModel @Inject constructor(
             dismissSplash = true
             Log.d(
                 "Calls",
-                "onboarding items retrieved: ${onboardingRepository.onboardingItems.size}"
+                "onboarding items retrieved: ${onboardingRepository.onboardingItems.size}. setting mainScreenState to Onboarding"
             )
+            mainScreenState.value = MainScreenState.Onboarding(onboardingRepository.onboardingItems)
         }
     }
 
