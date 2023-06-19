@@ -16,7 +16,7 @@ import javax.inject.Inject
 
 class CharacterRepository @Inject constructor()  : MediaRepository{
     private var retrofit = ShowCharacterServiceModule.provideRetrofitForDuckDuckGoShow()
-    private var apiInterface: DuckDuckGoCharactersApiService = retrofit.create(DuckDuckGoCharactersApiService::class.java)
+    var apiInterface: DuckDuckGoCharactersApiService = retrofit.create(DuckDuckGoCharactersApiService::class.java)
 
     var showCharacters = ShowCharacters("Unspecified", emptyList())
 
