@@ -14,7 +14,6 @@ import com.ameerhamza.animatedgiflivewallpapers.homePage.data.repo.VideoReposito
 import com.ameerhamza.animatedgiflivewallpapers.homePage.state.MainScreenState
 import com.ameerhamza.animatedgiflivewallpapers.onbording.data.repository.OnboardingRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.map
@@ -30,7 +29,6 @@ class HomeScreenViewModel @Inject constructor(
 
     var mainScreenState = MutableStateFlow<MainScreenState>(MainScreenState.Splash)
     var dismissSplash = false
-
 
 
     fun getWallpapers(): Flow<PagingData<WallpaperUi>> {
@@ -64,24 +62,18 @@ class HomeScreenViewModel @Inject constructor(
     }
 
     fun onboardingCompleted() {
-        viewModelScope.launch(Dispatchers.IO) {
+        viewModelScope.launch {
             onboardingRepository.saveOnboardingCompleted()
         }
         mainScreenState.value = MainScreenState.Home
         Log.d("Calls", "mainScreenState set to Home in onboardingComplete()")
     }
 
-    private fun fetchOnboardingData() {
+    private suspend fun fetchOnboardingData() {
         Log.d("Calls", "fetchOnboardingData called")
-        viewModelScope.launch(Dispatchers.IO) {
-            onboardingRepository.fetchOnboardingItems()
-            dismissSplash = true
-            Log.d(
-                "Calls",
-                "onboarding items retrieved: ${onboardingRepository.onboardingItems.size}. setting mainScreenState to Onboarding"
-            )
-            mainScreenState.value = MainScreenState.Onboarding(onboardingRepository.onboardingItems)
-        }
+        onboardingRepository.fetchOnboardingItems()
+        dismissSplash = true
+        mainScreenState.value = MainScreenState.Onboarding(onboardingRepository.onboardingItems)
     }
 
     companion object {
