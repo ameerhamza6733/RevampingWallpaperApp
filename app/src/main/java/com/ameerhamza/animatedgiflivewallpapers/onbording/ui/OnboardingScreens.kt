@@ -7,6 +7,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import com.ameerhamza.animatedgiflivewallpapers.onbording.data.model.OnboardingItem
 import com.ameerhamza.animatedgiflivewallpapers.onbording.ui.viewModel.OnboardingViewModel
 import com.ameerhamza.animatedgiflivewallpapers.onbording.ui.OnboardingScreen
@@ -20,7 +21,7 @@ import com.ameerhamza.animatedgiflivewallpapers.onbording.ui.OnboardingScreen
  * Always best to hoist event handling so onComplete provided and ViewModel NOT passed in
  */
 
-@ExperimentalAnimationApi
+//@ExperimentalAnimationApi
 @Composable
 fun OnboardingScreens(onboardingItems: List<OnboardingItem>, onComplete: () -> Unit) {
     Log.d("Calls", "OnboardingScreens composable")
@@ -47,7 +48,7 @@ fun OnboardingScreens(onboardingItems: List<OnboardingItem>, onComplete: () -> U
             isFirstScreen = isFirstScreen,
             currentPage = currentOnboardingIndex.value,
             pageCount = onboardingItems.size,
-            previousePage =  previousePage.value,
+            previousePage = previousePage.value,
             onSwipeLeft = {
                 if (currentOnboardingIndex.value == onboardingItems.size - 1) {
                     // Handle the last onboarding screen swipe right

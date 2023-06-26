@@ -12,6 +12,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.ameerhamza.animatedgiflivewallpapers.comman.ui.component.NavDestination
@@ -19,13 +20,19 @@ import com.ameerhamza.animatedgiflivewallpapers.comman.ui.component.setupNavigat
 import com.ameerhamza.animatedgiflivewallpapers.comman.ui.theme.MyApplicationTheme
 import com.ameerhamza.animatedgiflivewallpapers.homePage.state.MainScreenState
 import com.ameerhamza.animatedgiflivewallpapers.homePage.ui.HomeScreenViewModel
+import com.ameerhamza.animatedgiflivewallpapers.homePage.ui.componets.wallPaperList
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
     private val viewModel by viewModels<HomeScreenViewModel>()
     override fun onCreate(savedInstanceState: Bundle?) {
+        val splashScreen = installSplashScreen()
+
+        splashScreen.setKeepOnScreenCondition { !viewModel.dismissSplash }
+
         super.onCreate(savedInstanceState)
+
         setContent {
             MyApplicationTheme {
                 // A surface container using the 'background' color from the theme
@@ -33,11 +40,12 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colors.background
                 ) {
+
                     val navController = rememberNavController()
 
-                    setupNavigation(navController, NavDestination.SPLASH_SCREEN, viewModel)
-                    viewModel.fetchOnboardingData()
-                    showMainScreen(viewModel, navController)
+                    setupNavigation(navController, NavDestination.ONBOARDING_SCREEN, viewModel)
+                    viewModel.startup()
+                    showCurrentScreen(viewModel, navController)
                 }
             }
         }
@@ -45,14 +53,13 @@ class MainActivity : ComponentActivity() {
 }
 
 @Composable
-fun showMainScreen(viewModel: HomeScreenViewModel, navigator: NavController) {
+fun showCurrentScreen(viewModel: HomeScreenViewModel, navigator: NavController) {
     val state by viewModel.mainScreenState.collectAsState()
 
     Log.d("Calls", "showMainScreen with $state")
-    // App always starts with Splash screen which is the startDestination in NavController
     when (state) {
         is MainScreenState.Onboarding -> {
-            navigator.popBackStack() // Onboarding only called with Splash displayed
+            navigator.popBackStack()
             navigator.navigate(NavDestination.ONBOARDING_SCREEN)
         }
         is MainScreenState.Home -> {

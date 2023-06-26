@@ -27,23 +27,11 @@ class OnboardingViewModel @Inject constructor(private val repository: Onboarding
 
 
     init {
-        viewModelScope.launch {
-            val isCompleted = withContext(Dispatchers.IO) {
-                repository.getSettings() != null
-            }
-            _isOnboardingCompleted.value = isCompleted
-        }
+
 
     }
 
-    fun markOnboardingCompleted() {
-        viewModelScope.launch {
-            withContext(Dispatchers.IO) {
-                repository.insertSettings(Settings(onboardingCompleted = true))
-            }
-            _isOnboardingCompleted.value = true
-        }
-    }
+
 
 //     fun fetchOnboardingData() {
 //        viewModelScope.launch(Dispatchers.IO) {

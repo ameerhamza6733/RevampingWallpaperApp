@@ -6,6 +6,7 @@ import androidx.lifecycle.viewModelScope
 import androidx.paging.PagingData
 import androidx.paging.cachedIn
 import androidx.paging.map
+import com.ameerhamza.animatedgiflivewallpapers.comman.di.AppPrefs
 import com.ameerhamza.animatedgiflivewallpapers.homePage.data.model.MediaType
 import com.ameerhamza.animatedgiflivewallpapers.homePage.data.model.VideoWallpaperRequest
 import com.ameerhamza.animatedgiflivewallpapers.homePage.data.model.WallpaperUi
@@ -13,8 +14,6 @@ import com.ameerhamza.animatedgiflivewallpapers.homePage.data.repo.VideoReposito
 import com.ameerhamza.animatedgiflivewallpapers.homePage.state.MainScreenState
 import com.ameerhamza.animatedgiflivewallpapers.onbording.data.repository.OnboardingRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.map
@@ -29,7 +28,7 @@ class HomeScreenViewModel @Inject constructor(
     ViewModel() {
 
     var mainScreenState = MutableStateFlow<MainScreenState>(MainScreenState.Splash)
-
+    var dismissSplash = false
 
 
     fun getWallpapers(): Flow<PagingData<WallpaperUi>> {
@@ -50,18 +49,32 @@ class HomeScreenViewModel @Inject constructor(
         }.cachedIn(viewModelScope)
     }
 
-    fun fetchOnboardingData() {
-        viewModelScope.launch(Dispatchers.IO) {
-            onboardingRepository.fetchOnboardingItems()
-            delay(3000) // TODO: Remove. For testing full splash animations only
-            mainScreenState.value = MainScreenState.Onboarding(onboardingRepository.onboardingItems)
+    fun startup() {
+        viewModelScope.launch {
+            if (!onboardingRepository.isOnboardingCompleted().await())
+                fetchOnboardingData()
+            else {
+                dismissSplash = true
+                mainScreenState.value = MainScreenState.Home
+                Log.d("Calls", "mainScreenState set to Home in startup()")
+            }
         }
     }
 
     fun onboardingCompleted() {
+        viewModelScope.launch {
+            onboardingRepository.saveOnboardingCompleted()
+        }
         mainScreenState.value = MainScreenState.Home
+        Log.d("Calls", "mainScreenState set to Home in onboardingComplete()")
     }
 
+    private suspend fun fetchOnboardingData() {
+        Log.d("Calls", "fetchOnboardingData called")
+        onboardingRepository.fetchOnboardingItems()
+        dismissSplash = true
+        mainScreenState.value = MainScreenState.Onboarding(onboardingRepository.onboardingItems)
+    }
 
     companion object {
         private val TAG = " HomeScreenViewModelTAG"
