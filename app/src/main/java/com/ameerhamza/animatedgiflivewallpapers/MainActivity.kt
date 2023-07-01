@@ -20,7 +20,6 @@ import com.ameerhamza.animatedgiflivewallpapers.comman.ui.component.setupNavigat
 import com.ameerhamza.animatedgiflivewallpapers.comman.ui.theme.MyApplicationTheme
 import com.ameerhamza.animatedgiflivewallpapers.homePage.state.MainScreenState
 import com.ameerhamza.animatedgiflivewallpapers.homePage.ui.HomeScreenViewModel
-import com.ameerhamza.animatedgiflivewallpapers.homePage.ui.componets.wallPaperList
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint

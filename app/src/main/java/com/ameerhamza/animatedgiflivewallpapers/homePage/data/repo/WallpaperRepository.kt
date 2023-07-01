@@ -1,42 +1,35 @@
 package com.ameerhamza.animatedgiflivewallpapers.homePage.data.repo
 
-import androidx.paging.Pager
-import androidx.paging.PagingConfig
-import androidx.paging.PagingData
-import androidx.paging.map
+import androidx.paging.*
+import com.ameerhamza.animatedgiflivewallpapers.homePage.data.dataSources.DiscoverWallpaperDataSource
 import com.ameerhamza.animatedgiflivewallpapers.homePage.data.dataSources.VideoRemotePagingSource
 import com.ameerhamza.animatedgiflivewallpapers.homePage.data.model.VideoWallpaperRequest
-import com.ameerhamza.animatedgiflivewallpapers.homePage.data.model.VideoWallpaperResponse
+import com.ameerhamza.animatedgiflivewallpapers.homePage.data.model.WallpaperResponse
 import com.ameerhamza.animatedgiflivewallpapers.homePage.data.servies.VideoWallpaperService
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.map
 import javax.inject.Inject
 
-class VideoRepository @Inject constructor(private val videoApiService: VideoWallpaperService) {
+class WallpaperRepository @Inject constructor(private val videoApiService: VideoWallpaperService, private val coroutineScope: CoroutineScope) {
+
+    private val TAG = "WallpaperRepository"
 
     fun getVideosWithPaging(
-        dataSourceType: Int,
         videoWallpaperRequest: VideoWallpaperRequest
-    ): Flow<PagingData<VideoWallpaperResponse>> {
+    ): Flow<PagingData<WallpaperResponse>> {
 
         val config = PagingConfig(
             pageSize = 40,
             prefetchDistance = 0,
         )
 
-       val videoRemoteDataSource = VideoRemotePagingSource(
-            videoApiService,
-            videoWallpaperRequest.searchTerm
-        )
+        val videoRemoteDataSource = DiscoverWallpaperDataSource(
+            videoApiService
+        ,coroutineScope)
 
         return Pager(config) {
             videoRemoteDataSource
-        }
-            .flow.map { pagingData ->
-                pagingData.map { pixelVideo ->
-                    pixelVideo.toVideoWallpaperResponse()
-                }
-            }
+        }.flow
     }
 
     companion object {

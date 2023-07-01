@@ -6,11 +6,10 @@ import androidx.lifecycle.viewModelScope
 import androidx.paging.PagingData
 import androidx.paging.cachedIn
 import androidx.paging.map
-import com.ameerhamza.animatedgiflivewallpapers.comman.di.AppPrefs
 import com.ameerhamza.animatedgiflivewallpapers.homePage.data.model.MediaType
 import com.ameerhamza.animatedgiflivewallpapers.homePage.data.model.VideoWallpaperRequest
 import com.ameerhamza.animatedgiflivewallpapers.homePage.data.model.WallpaperUi
-import com.ameerhamza.animatedgiflivewallpapers.homePage.data.repo.VideoRepository
+import com.ameerhamza.animatedgiflivewallpapers.homePage.data.repo.WallpaperRepository
 import com.ameerhamza.animatedgiflivewallpapers.homePage.state.MainScreenState
 import com.ameerhamza.animatedgiflivewallpapers.onbording.data.repository.OnboardingRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -22,8 +21,8 @@ import javax.inject.Inject
 
 @HiltViewModel
 class HomeScreenViewModel @Inject constructor(
-    private val videoRepository: VideoRepository,
-    val onboardingRepository: OnboardingRepository
+    private val videoRepository: WallpaperRepository,
+    val onboardingRepository: OnboardingRepository,
 ) :
     ViewModel() {
 
@@ -31,11 +30,11 @@ class HomeScreenViewModel @Inject constructor(
     var dismissSplash = false
 
 
+
     fun getWallpapers(): Flow<PagingData<WallpaperUi>> {
 
         Log.d(TAG, "loading the data")
         return videoRepository.getVideosWithPaging(
-            VideoRepository.DEFAULT_VIDEO_WALLPAPER_REMOTE_SOURCE,
             VideoWallpaperRequest("Nature")
         ).map { pagingData ->
             pagingData.map {
@@ -46,7 +45,7 @@ class HomeScreenViewModel @Inject constructor(
                     MediaType.VIDEO
                 )
             }
-        }.cachedIn(viewModelScope)
+        }
     }
 
     fun startup() {

@@ -3,7 +3,8 @@ package com.ameerhamza.animatedgiflivewallpapers.homePage.data.dataSources
 import androidx.paging.PagingSource
 import androidx.paging.PagingState
 import com.ameerhamza.animatedgiflivewallpapers.BuildConfig
-import com.ameerhamza.animatedgiflivewallpapers.homePage.data.model.ImageWallpaperApiReponse
+import com.ameerhamza.animatedgiflivewallpapers.homePage.data.model.ImageWallpaperApiResponse
+import com.ameerhamza.animatedgiflivewallpapers.homePage.data.model.ImageWallpaperListApiResponse
 import com.ameerhamza.animatedgiflivewallpapers.homePage.data.model.SimilarCategories
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
@@ -11,17 +12,17 @@ import org.jsoup.nodes.Element
 import org.jsoup.select.Elements
 
 
-class ImageDataSource() : PagingSource<Int, ImageWallpaperApiReponse>() {
+class ImagePagingDataSource : PagingSource<Int, ImageWallpaperListApiResponse>() {
 
 
-    override fun getRefreshKey(state: PagingState<Int, ImageWallpaperApiReponse>): Int? {
+    override fun getRefreshKey(state: PagingState<Int, ImageWallpaperListApiResponse>): Int? {
         return null
     }
 
-    override suspend fun load(params: LoadParams<Int>): LoadResult<Int, ImageWallpaperApiReponse> {
+    override suspend fun load(params: LoadParams<Int>): LoadResult<Int, ImageWallpaperListApiResponse> {
         try {
 
-            val photoList = arrayListOf<ImageWallpaperApiReponse>()
+            val photoList = arrayListOf<ImageWallpaperListApiResponse>()
             val doc: Document = Jsoup.connect(BuildConfig.IMAGE_BASE_URL_SHOPIFY)
                 .userAgent("Mozilla/5.0 (Windows; U; WindowsNT 5.1; en-US; rv1.8.1.6) Gecko/20070725 Firefox/2.0.0.6")
                 .get()
@@ -69,7 +70,7 @@ class ImageDataSource() : PagingSource<Int, ImageWallpaperApiReponse>() {
                 var imageUrl: String = iteratorImageUrl.next().attr("data-srcset")
                 val lowResImageUrl = imageUrl.split(" ".toRegex()).toTypedArray()[0]
                 imageUrl = imageUrl.substring(0, imageUrl.indexOf("?"))
-                photoList.add(ImageWallpaperApiReponse(lowResImageUrl, imageUrl, title))
+                photoList.add(ImageWallpaperListApiResponse(lowResImageUrl, imageUrl, title))
             }
 
             return LoadResult.Page(

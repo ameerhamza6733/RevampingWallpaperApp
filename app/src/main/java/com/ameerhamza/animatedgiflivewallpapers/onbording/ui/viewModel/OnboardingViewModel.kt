@@ -26,17 +26,4 @@ class OnboardingViewModel @Inject constructor(private val repository: Onboarding
     val isOnboardingCompleted: LiveData<Boolean> = _isOnboardingCompleted
 
 
-    init {
-
-
-    }
-
-
-
-//     fun fetchOnboardingData() {
-//        viewModelScope.launch(Dispatchers.IO) {
-//            val items = onboardingDataSource.fetchOnboardingItems()
-//            _onboardingItems.postValue(items )
-//        }
-//    }
 }

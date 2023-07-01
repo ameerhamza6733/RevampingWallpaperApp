@@ -9,11 +9,12 @@ class VideoWallpaperPixelsApiResponse(
     @SerializedName("videos") val videos: List<VideoWallpaperPixelsVideoListResponse>
 ) {
     class VideoWallpaperPixelsVideoListResponse(@SerializedName("url") val url: String, @SerializedName("id") val id:Long, @SerializedName("image") val image:String){
-        fun toVideoWallpaperResponse():VideoWallpaperResponse{
-           return VideoWallpaperResponse(
+        fun toVideoWallpaperResponse():WallpaperResponse{
+           return WallpaperResponse(
                 image = image,
                 url = url,
-                id = id
+                id = id,
+               wallpaperType = WallpaperResponse.VIDEO_WALLPAPER
             )
         }
     }
