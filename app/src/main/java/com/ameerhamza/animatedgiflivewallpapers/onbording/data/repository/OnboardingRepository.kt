@@ -12,9 +12,7 @@ import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.launch
 import javax.inject.Inject
-import kotlin.coroutines.suspendCoroutine
 
 class OnboardingRepository @Inject constructor(
     @ApplicationContext private val context: Context,
@@ -25,7 +23,7 @@ class OnboardingRepository @Inject constructor(
 
 
     suspend fun fetchOnboardingItems(): List<OnboardingItem> {
-        onboardingItems = dataSource.fetchOnboardingItems()
+        onboardingItems = dataSource.fetchOnboardItems()
         return onboardingItems
     }
 

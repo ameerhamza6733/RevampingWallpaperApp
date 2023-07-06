@@ -4,8 +4,8 @@ import com.ameerhamza.animatedgiflivewallpapers.onbording.data.model.ImageDescri
 import com.ameerhamza.animatedgiflivewallpapers.onbording.data.model.OnboardingItem
 import com.ameerhamza.animatedgiflivewallpapers.R
 
-class FakeCongfigDataSource : OnboardingDataSource {
-    override suspend fun fetchOnboardingItems(): List<OnboardingItem> {
+class FakeCongfigDataSource : OnboardDataSource {
+    override suspend fun fetchOnboardItems(): List<OnboardingItem> {
         return listOf(
             OnboardingItem(
                 title = "Dynamic Delights \n GIFs & Video Wallpapers.",

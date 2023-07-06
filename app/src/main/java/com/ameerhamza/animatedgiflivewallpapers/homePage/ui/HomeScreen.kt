@@ -7,16 +7,16 @@ import androidx.compose.ui.Modifier
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
 import androidx.paging.compose.collectAsLazyPagingItems
-import com.ameerhamza.animatedgiflivewallpapers.homePage.ui.componets.toolbar
-import com.ameerhamza.animatedgiflivewallpapers.homePage.ui.componets.wallPaperList
+import com.ameerhamza.animatedgiflivewallpapers.homePage.ui.componets.Toolbar
+import com.ameerhamza.animatedgiflivewallpapers.homePage.ui.componets.WallPaperList
 
 @Composable
-fun homeScreen(viewModel: HomeScreenViewModel) {
+fun HomeScreen(viewModel: HomeScreenViewModel) {
     ConstraintLayout(modifier = Modifier.fillMaxHeight().fillMaxWidth()) {
         val (toolbarRef, tabView, content) = createRefs()
         val toolbarEndingTopContrat = createGuidelineFromTop(0.07f)
 
-        toolbar(modifier = Modifier
+        Toolbar(modifier = Modifier
             .constrainAs(toolbarRef) {
                 top.linkTo(parent.top)
                 start.linkTo(parent.start)
@@ -24,7 +24,7 @@ fun homeScreen(viewModel: HomeScreenViewModel) {
                 height = Dimension.fillToConstraints
             })
 
-        wallPaperList(
+        WallPaperList(
             viewModel.getWallpapers().collectAsLazyPagingItems(),
             modifier = Modifier.constrainAs(content) {
                 top.linkTo(toolbarRef.bottom)

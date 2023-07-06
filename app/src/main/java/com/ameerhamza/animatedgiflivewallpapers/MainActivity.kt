@@ -29,9 +29,7 @@ class MainActivity : ComponentActivity() {
         val splashScreen = installSplashScreen()
 
         splashScreen.setKeepOnScreenCondition { !viewModel.dismissSplash }
-
         super.onCreate(savedInstanceState)
-
         setContent {
             MyApplicationTheme {
                 // A surface container using the 'background' color from the theme

@@ -2,8 +2,9 @@ package com.ameerhamza.animatedgiflivewallpapers.homePage.ui.componets
 
 
 import androidx.compose.foundation.Canvas
-import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.size
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
 import androidx.compose.material.Text
@@ -11,7 +12,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.*
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
@@ -22,9 +22,11 @@ import com.ameerhamza.animatedgiflivewallpapers.comman.ui.color
 import com.ameerhamza.animatedgiflivewallpapers.comman.ui.theme.buttonColor
 
 @Composable
-fun toolbar(modifier: Modifier) {
-    ConstraintLayout(modifier = modifier
-        .fillMaxWidth()) {
+fun Toolbar(modifier: Modifier) {
+    ConstraintLayout(
+        modifier = modifier
+            .fillMaxWidth()
+    ) {
         val (drawerButton, forYouTab, fromGalleryTab, searchButton) = createRefs()
         val middleGuidleine = createGuidelineFromStart(0.5f)
         val startGuideline = createGuidelineFromStart(0.04f)
@@ -32,9 +34,9 @@ fun toolbar(modifier: Modifier) {
 
         IconButton(modifier = Modifier
             .constrainAs(drawerButton) {
-            start.linkTo(startGuideline)
-            top.linkTo(parent.top)
-        }, onClick = {
+                start.linkTo(startGuideline)
+                top.linkTo(parent.top)
+            }, onClick = {
         }) {
             Icon(
                 painter = painterResource(R.drawable.ic_baseline_notes_24),
@@ -48,7 +50,7 @@ fun toolbar(modifier: Modifier) {
             height = Dimension.wrapContent
 
         })
-        roundedRectangleWithRightCorner(modifier=Modifier.constrainAs(fromGalleryTab){
+        RoundedRectangleWithRightCorner(modifier = Modifier.constrainAs(fromGalleryTab) {
             start.linkTo(middleGuidleine)
             top.linkTo(parent.top)
             bottom.linkTo(parent.bottom)
@@ -71,7 +73,7 @@ fun toolbar(modifier: Modifier) {
 @Composable
 fun roundedRectangleWithLeftCorner(modifier: Modifier) {
     Box(
-        modifier = modifier.size(116.dp,32.dp)
+        modifier = modifier.size(116.dp, 32.dp)
 
     ) {
         Canvas(modifier = Modifier) {
@@ -91,13 +93,14 @@ fun roundedRectangleWithLeftCorner(modifier: Modifier) {
 
             drawPath(path, color = buttonColor)
         }
-        Text("For you",modifier = Modifier.align(Alignment.Center))
+        Text("For you", modifier = Modifier.align(Alignment.Center))
     }
 }
+
 @Composable
-fun roundedRectangleWithRightCorner(modifier: Modifier) {
+fun RoundedRectangleWithRightCorner(modifier: Modifier) {
     Box(
-        modifier = modifier.size(116.dp,32.dp)
+        modifier = modifier.size(116.dp, 32.dp)
 
     ) {
         Canvas(modifier = Modifier) {
@@ -117,7 +120,7 @@ fun roundedRectangleWithRightCorner(modifier: Modifier) {
 
             drawPath(path, color = "#004A50DA".color)
         }
-        Text("Gallery",modifier = Modifier.align(Alignment.Center))
+        Text("Gallery", modifier = Modifier.align(Alignment.Center))
     }
 }
 

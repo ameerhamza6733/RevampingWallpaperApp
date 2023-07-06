@@ -1,4 +1,4 @@
-package com.ameerhamza.animatedgiflivewallpapers.comman.ui.component
+package com.ameerhamza.animatedgiflivewallpapers.onbording.component
 
 import androidx.compose.animation.animateContentSize
 import androidx.compose.animation.core.animateFloatAsState
@@ -17,6 +17,7 @@ import androidx.compose.ui.unit.dp
 
 @Composable
 fun PageIndicator(currentPage: Int, pageCount: Int,modifier: Modifier) {
+
     val selectedWidth = 24.dp
     val unselectedWidth = 12.dp
 
@@ -27,7 +28,6 @@ fun PageIndicator(currentPage: Int, pageCount: Int,modifier: Modifier) {
     ) {
         repeat(pageCount) { index ->
             val width = if (index == currentPage) selectedWidth else unselectedWidth
-
             Box(
                 modifier = Modifier
                     .size(width, height = 6.dp)

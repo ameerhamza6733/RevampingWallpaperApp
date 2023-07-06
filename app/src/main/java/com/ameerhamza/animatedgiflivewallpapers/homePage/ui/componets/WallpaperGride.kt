@@ -23,7 +23,7 @@ import com.bumptech.glide.integration.compose.GlideImage
 
 
 @Composable
-fun wallPaperList(wallpaperList: LazyPagingItems<WallpaperUi>, modifier: Modifier) {
+fun WallPaperList(wallpaperList: LazyPagingItems<WallpaperUi>, modifier: Modifier) {
 
     LazyVerticalGrid(modifier=modifier,
         columns = GridCells.Fixed(3)
@@ -31,14 +31,14 @@ fun wallPaperList(wallpaperList: LazyPagingItems<WallpaperUi>, modifier: Modifie
         items(wallpaperList.itemCount, key = { index ->
             wallpaperList.get(index)!!.thumbnail
         }) { index ->
-            wallpaperItem(wallpaperList[index]!!)
+            WallpaperItem(wallpaperList[index]!!)
         }
     }
 }
 
 @OptIn(ExperimentalGlideComposeApi::class)
 @Composable
-fun wallpaperItem(video: WallpaperUi) {
+fun WallpaperItem(video: WallpaperUi) {
 
     ConstraintLayout {
         val ( spaceFirst, thumbnail, icon, wallpaperTypeIcon, wallpaperTitle) = createRefs()
@@ -63,7 +63,7 @@ fun wallpaperItem(video: WallpaperUi) {
                 },
         )
 
-        premiumIcon(painterResource(id = R.drawable.ic_baseline_attach_money_24),
+        PremiumIcon(painterResource(id = R.drawable.ic_baseline_attach_money_24),
             modifier = Modifier
                 .clip(CircleShape)
                 .background(yallowColorEC9718)
@@ -72,7 +72,7 @@ fun wallpaperItem(video: WallpaperUi) {
                     start.linkTo(startGuideline)
                 })
 
-        premiumIcon(painterResource(id = R.drawable.video_icon_onbording_second_screen),
+        PremiumIcon(painterResource(id = R.drawable.video_icon_onbording_second_screen),
             modifier = Modifier
                 .clip(CircleShape)
                 .background("#3D222222".color)

@@ -4,7 +4,6 @@ import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.paging.PagingData
-import androidx.paging.cachedIn
 import androidx.paging.map
 import com.ameerhamza.animatedgiflivewallpapers.homePage.data.model.MediaType
 import com.ameerhamza.animatedgiflivewallpapers.homePage.data.model.VideoWallpaperRequest
@@ -30,9 +29,7 @@ class HomeScreenViewModel @Inject constructor(
     var dismissSplash = false
 
 
-
     fun getWallpapers(): Flow<PagingData<WallpaperUi>> {
-
         Log.d(TAG, "loading the data")
         return videoRepository.getVideosWithPaging(
             VideoWallpaperRequest("Nature")

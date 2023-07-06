@@ -14,28 +14,25 @@ import org.jsoup.nodes.Document
 import org.jsoup.nodes.Element
 import org.jsoup.select.Elements
 
-data class DiscoverWallpaperPagingKey(val videoPageKey: Int?, val imageWallpaperKey: Int?)
 
-class DiscoverWallpaperDataSource(
+class CombineDataSource(
     private val videoApiService: VideoWallpaperService
 ) :
     PagingSource<DiscoverWallpaperPagingKey, WallpaperResponse>() {
-
     override fun getRefreshKey(state: PagingState<DiscoverWallpaperPagingKey, WallpaperResponse>): DiscoverWallpaperPagingKey? {
         return null
     }
 
     override suspend fun load(params: LoadParams<DiscoverWallpaperPagingKey>): LoadResult<DiscoverWallpaperPagingKey, WallpaperResponse> {
         return try {
-
             val pagingKey =
-                params.key ?: DiscoverWallpaperPagingKey(1,1)
+                params.key ?: DiscoverWallpaperPagingKey(1, 1)
 
             val videoWallpaper = try {
                 videoApiService.getVideos(
                     perPage = params.loadSize,
                     query = "car",
-                    page = pagingKey?.videoPageKey ?: 1,
+                    page = pagingKey.videoPageKey ?: 1,
                     orientation = "portrait"
                 )
             } catch (e: Exception) {
@@ -43,7 +40,12 @@ class DiscoverWallpaperDataSource(
             }
 
             val imageWallpaper = try {
-                withContext(Dispatchers.IO) { getImageWallpaper("car",pagingKey.imageWallpaperKey?:1) }
+                withContext(Dispatchers.IO) {
+                    getImageWallpaper(
+                        "car",
+                        pagingKey.imageWallpaperKey ?: 1
+                    )
+                }
             } catch (e: Exception) {
                 null
             }
@@ -59,12 +61,16 @@ class DiscoverWallpaperDataSource(
                 null
             }
 
-            val videoWallpaperNextPage = if (videoWallpaper?.nextPage != null) pagingKey.videoPageKey!! + 1 else null
-            val imageWallpaperNextPage = if (imageWallpaper?.nextPageNumber!=null) pagingKey.imageWallpaperKey!! +1 else null
+            val videoWallpaperNextPage =
+                if (videoWallpaper?.nextPage != null) pagingKey.videoPageKey!! + 1 else null
+            val imageWallpaperNextPage =
+                if (imageWallpaper?.nextPageNumber != null) pagingKey.imageWallpaperKey!! + 1 else null
+            val discoverWallpaperDataSource = DiscoverWallpaperPagingKey(
+                videoWallpaperNextPage,
+                imageWallpaperKey = imageWallpaperNextPage
+            )
 
-            val discoverWallpaperDataSource = DiscoverWallpaperPagingKey(videoWallpaperNextPage,imageWallpaperKey = imageWallpaperNextPage)
-
-            Log.d(TAG,"next key ${Gson().toJson(discoverWallpaperDataSource)}")
+            Log.d(TAG, "next key ${Gson().toJson(discoverWallpaperDataSource)}")
             LoadResult.Page(
                 data = wallpapers ?: listOf(),
                 prevKey = null,
@@ -77,16 +83,6 @@ class DiscoverWallpaperDataSource(
         }
     }
 
-    private fun margeKey(
-        videoWallpaperPreviousPage: Int?,
-        videoWallpaperNextPage: Int?,
-        imageWallpaperNExtPage: Int?
-    ): DiscoverWallpaperPagingKey {
-        return DiscoverWallpaperPagingKey(
-            videoPageKey = if (videoWallpaperNextPage != null) videoWallpaperNextPage + 1 else null,
-            imageWallpaperKey = imageWallpaperNExtPage
-        )
-    }
 
     private fun margeAllWallpaper(
         videoWallpaperList: List<VideoWallpaperPixelsApiResponse.VideoWallpaperPixelsVideoListResponse>?,
@@ -117,13 +113,14 @@ class DiscoverWallpaperDataSource(
         return wallpaperResponse
     }
 
-    private fun getImageWallpaper(search:String,page:Int): ImageWallpaperApiResponse {
+    private fun getImageWallpaper(search: String, page: Int): ImageWallpaperApiResponse {
         return try {
             val photoList = arrayListOf<ImageWallpaperListApiResponse>()
-            val doc: Document = Jsoup.connect((BuildConfig.IMAGE_BASE_URL_SHOPIFY).plus("page=$page&q=$search"))
-                .userAgent("Mozilla/5.0 (Windows; U; WindowsNT 5.1; en-US; rv1.8.1.6) Gecko/20070725 Firefox/2.0.0.6")
-                .get()
-            Log.d(TAG,"image wallpaper --> ${doc.baseUri()}")
+            val doc: Document =
+                Jsoup.connect((BuildConfig.IMAGE_BASE_URL_SHOPIFY).plus("page=$page&q=$search"))
+                    .userAgent("Mozilla/5.0 (Windows; U; WindowsNT 5.1; en-US; rv1.8.1.6) Gecko/20070725 Firefox/2.0.0.6")
+                    .get()
+            Log.d(TAG, "image wallpaper --> ${doc.baseUri()}")
             val eImageUrl: Elements = doc.select("img")
             val eTitle: Elements = doc.select("p.photo-tile__title")
             val eTotelPages: Elements = doc.select("li.next")
@@ -134,15 +131,15 @@ class DiscoverWallpaperDataSource(
 
 
             val nextPage = try {
-                val href= eTotelPages.get(0).selectFirst("a[rel=next]").attr("href")
-                Log.d(TAG,"href ${href}")
-                val pageNumber = href.substring(href.indexOf("page=")+5,href.indexOf("&q="))
-                Log.d(TAG,"pageNumber ${pageNumber}")
+                val href = eTotelPages.get(0).selectFirst("a[rel=next]").attr("href")
+                Log.d(TAG, "href ${href}")
+                val pageNumber = href.substring(href.indexOf("page=") + 5, href.indexOf("&q="))
+                Log.d(TAG, "pageNumber ${pageNumber}")
                 pageNumber.toInt()
-            }catch (e:Exception){
+            } catch (e: Exception) {
                 null
             }
-            Log.d(TAG,"nextPage ${nextPage}")
+            Log.d(TAG, "nextPage ${nextPage}")
             val categories: MutableList<SimilarCategories> = ArrayList<SimilarCategories>()
 
             for (element in eCategories) {
@@ -189,4 +186,6 @@ class DiscoverWallpaperDataSource(
     }
 
 }
+
+data class DiscoverWallpaperPagingKey(val videoPageKey: Int?, val imageWallpaperKey: Int?)
 

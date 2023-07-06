@@ -3,7 +3,6 @@ package com.ameerhamza.animatedgiflivewallpapers.homePage.data.dataSources
 import androidx.paging.PagingSource
 import androidx.paging.PagingState
 import com.ameerhamza.animatedgiflivewallpapers.BuildConfig
-import com.ameerhamza.animatedgiflivewallpapers.homePage.data.model.ImageWallpaperApiResponse
 import com.ameerhamza.animatedgiflivewallpapers.homePage.data.model.ImageWallpaperListApiResponse
 import com.ameerhamza.animatedgiflivewallpapers.homePage.data.model.SimilarCategories
 import org.jsoup.Jsoup
@@ -76,7 +75,7 @@ class ImagePagingDataSource : PagingSource<Int, ImageWallpaperListApiResponse>()
             return LoadResult.Page(
                 data = photoList,
                 nextKey = if (nextPage != null) nextPage + 1 else null,
-                prevKey = if (nextPage!=null && nextPage>1) nextPage-1 else null
+                prevKey = if (nextPage != null && nextPage > 1) nextPage - 1 else null
             )
         } catch (e: Exception) {
             return LoadResult.Error(e)

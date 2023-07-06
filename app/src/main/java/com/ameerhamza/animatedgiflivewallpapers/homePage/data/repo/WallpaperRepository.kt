@@ -1,7 +1,7 @@
 package com.ameerhamza.animatedgiflivewallpapers.homePage.data.repo
 
 import androidx.paging.*
-import com.ameerhamza.animatedgiflivewallpapers.homePage.data.dataSources.DiscoverWallpaperDataSource
+import com.ameerhamza.animatedgiflivewallpapers.homePage.data.dataSources.CombineDataSource
 import com.ameerhamza.animatedgiflivewallpapers.homePage.data.dataSources.VideoRemotePagingSource
 import com.ameerhamza.animatedgiflivewallpapers.homePage.data.model.VideoWallpaperRequest
 import com.ameerhamza.animatedgiflivewallpapers.homePage.data.model.WallpaperResponse
@@ -23,7 +23,7 @@ class WallpaperRepository @Inject constructor(private val videoApiService: Video
             prefetchDistance = 1,
         )
 
-        val videoRemoteDataSource = DiscoverWallpaperDataSource(
+        val videoRemoteDataSource = CombineDataSource(
             videoApiService
         )
 

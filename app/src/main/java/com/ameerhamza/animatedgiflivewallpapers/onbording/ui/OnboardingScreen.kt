@@ -27,7 +27,7 @@ import androidx.compose.ui.unit.sp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
 import com.ameerhamza.animatedgiflivewallpapers.Roboto
-import com.ameerhamza.animatedgiflivewallpapers.comman.ui.component.PageIndicator
+import com.ameerhamza.animatedgiflivewallpapers.onbording.component.PageIndicator
 import com.ameerhamza.animatedgiflivewallpapers.comman.ui.component.RoundedButton
 import com.ameerhamza.animatedgiflivewallpapers.onbording.data.model.ImageDescription
 import com.ameerhamza.animatedgiflivewallpapers.onbording.data.model.OnboardingItem

@@ -13,7 +13,7 @@ import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.unit.dp
 
 @Composable
-fun premiumIcon(painter: Painter, modifier: Modifier) {
+fun PremiumIcon(painter: Painter, modifier: Modifier) {
         Box(modifier = modifier.padding(4.dp).size(20.dp).clip(RoundedCornerShape(7.dp))) {
             Icon(painter, contentDescription = null)
         }
