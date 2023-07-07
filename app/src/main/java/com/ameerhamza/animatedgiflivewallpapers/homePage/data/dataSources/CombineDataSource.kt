@@ -16,7 +16,8 @@ import org.jsoup.select.Elements
 
 
 class CombineDataSource(
-    private val videoApiService: VideoWallpaperService
+    private val videoApiService: VideoWallpaperService,
+    private val wallpaperRequest: WallpaperRequest
 ) :
     PagingSource<DiscoverWallpaperPagingKey, WallpaperResponse>() {
     override fun getRefreshKey(state: PagingState<DiscoverWallpaperPagingKey, WallpaperResponse>): DiscoverWallpaperPagingKey? {
@@ -30,8 +31,8 @@ class CombineDataSource(
 
             val videoWallpaper = try {
                 videoApiService.getVideos(
-                    perPage = params.loadSize,
-                    query = "car",
+                    perPage = 10,
+                    query = wallpaperRequest.searchTerm,
                     page = pagingKey.videoPageKey ?: 1,
                     orientation = "portrait"
                 )
@@ -42,7 +43,7 @@ class CombineDataSource(
             val imageWallpaper = try {
                 withContext(Dispatchers.IO) {
                     getImageWallpaper(
-                        "car",
+                        wallpaperRequest.searchTerm,
                         pagingKey.imageWallpaperKey ?: 1
                     )
                 }
@@ -52,6 +53,7 @@ class CombineDataSource(
 
             val wallpapers = try {
                 withContext(Dispatchers.Default) {
+                    Log.d(TAG,"marge image and video wallpaper total video wallpapers ${videoWallpaper?.videos?.size} image wallpaper ${imageWallpaper?.imageWallpaperListResponse?.size}")
                     margeAllWallpaper(
                         videoWallpaper?.videos,
                         imageWallpaper?.imageWallpaperListResponse
@@ -70,7 +72,8 @@ class CombineDataSource(
                 imageWallpaperKey = imageWallpaperNextPage
             )
 
-            Log.d(TAG, "next key ${Gson().toJson(discoverWallpaperDataSource)}")
+            Log.d(TAG,"wallpaper size ${wallpapers?.size}")
+
             LoadResult.Page(
                 data = wallpapers ?: listOf(),
                 prevKey = null,
@@ -95,7 +98,7 @@ class CombineDataSource(
                 image = videoWallpaperPixelsVideoListResponse.image,
                 id = System.currentTimeMillis(),
                 url = videoWallpaperPixelsVideoListResponse.url,
-                wallpaperType = WallpaperResponse.VIDEO_WALLPAPER
+                wallpaperType = WallpaperType.VIDEO
             )
         }?.let {
             wallpaperResponse.addAll(it)
@@ -106,8 +109,10 @@ class CombineDataSource(
                 image = imageWallpaperListApiResponse.lowResImageUrl,
                 id = System.currentTimeMillis(),
                 url = imageWallpaperListApiResponse.imageUrl,
-                wallpaperType = WallpaperResponse.IMAGE_WALLPAPER
+                wallpaperType = WallpaperType.IMAGE
             )
+        }?.let {
+            wallpaperResponse.addAll(it)
         }
 
         return wallpaperResponse
@@ -120,7 +125,6 @@ class CombineDataSource(
                 Jsoup.connect((BuildConfig.IMAGE_BASE_URL_SHOPIFY).plus("page=$page&q=$search"))
                     .userAgent("Mozilla/5.0 (Windows; U; WindowsNT 5.1; en-US; rv1.8.1.6) Gecko/20070725 Firefox/2.0.0.6")
                     .get()
-            Log.d(TAG, "image wallpaper --> ${doc.baseUri()}")
             val eImageUrl: Elements = doc.select("img")
             val eTitle: Elements = doc.select("p.photo-tile__title")
             val eTotelPages: Elements = doc.select("li.next")
@@ -132,19 +136,16 @@ class CombineDataSource(
 
             val nextPage = try {
                 val href = eTotelPages.get(0).selectFirst("a[rel=next]").attr("href")
-                Log.d(TAG, "href ${href}")
                 val pageNumber = href.substring(href.indexOf("page=") + 5, href.indexOf("&q="))
-                Log.d(TAG, "pageNumber ${pageNumber}")
                 pageNumber.toInt()
             } catch (e: Exception) {
                 null
             }
-            Log.d(TAG, "nextPage ${nextPage}")
-            val categories: MutableList<SimilarCategories> = ArrayList<SimilarCategories>()
+            val categories: MutableList<ImageWallpaperSimilarCategories> = ArrayList<ImageWallpaperSimilarCategories>()
 
             for (element in eCategories) {
                 val title: String = element.select("h4").text()
-                if (SimilarCategories.blackListCategores.containsKey(
+                if (ImageWallpaperSimilarCategories.blackListCategories.containsKey(
                         title.lowercase(
 
                         )
@@ -156,7 +157,7 @@ class CombineDataSource(
                     backgroundImage.indexOf("(") + 1,
                     backgroundImage.indexOf(")")
                 )
-                categories.add(SimilarCategories(title))
+                categories.add(ImageWallpaperSimilarCategories(title))
             }
 
 

@@ -1,4 +1,3 @@
 package com.ameerhamza.animatedgiflivewallpapers.homePage.data.model
 
-class ImageWallpaperRequest(val query: String) {
-}
+data class WallpaperRequest(val searchTerm:String)

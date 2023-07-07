@@ -9,6 +9,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
@@ -16,6 +17,7 @@ import androidx.paging.compose.LazyPagingItems
 import com.ameerhamza.animatedgiflivewallpapers.R
 import com.ameerhamza.animatedgiflivewallpapers.comman.ui.color
 import com.ameerhamza.animatedgiflivewallpapers.comman.ui.theme.yallowColorEC9718
+import com.ameerhamza.animatedgiflivewallpapers.homePage.data.model.WallpaperType
 import com.ameerhamza.animatedgiflivewallpapers.homePage.data.model.WallpaperUi
 import com.bumptech.glide.integration.compose.ExperimentalGlideComposeApi
 import com.bumptech.glide.integration.compose.GlideImage
@@ -31,31 +33,27 @@ fun WallPaperList(wallpaperList: LazyPagingItems<WallpaperUi>, modifier: Modifie
         items(wallpaperList.itemCount, key = { index ->
             wallpaperList.get(index)!!.thumbnail
         }) { index ->
-            WallpaperItem(wallpaperList[index]!!)
+            WallpaperView(wallpaperList[index]!!)
         }
     }
 }
 
 @OptIn(ExperimentalGlideComposeApi::class)
 @Composable
-fun WallpaperItem(video: WallpaperUi) {
+fun WallpaperView(wallpaperUi: WallpaperUi) {
 
     ConstraintLayout {
         val ( spaceFirst, thumbnail, icon, wallpaperTypeIcon, wallpaperTitle) = createRefs()
-        val startGuideline = createGuidelineFromStart(0.1f)
-        val endGuideline = createGuidelineFromEnd(0.1f)
-        val topGuideline = createGuidelineFromTop(0.07f)
-
 
         Spacer(modifier = Modifier.padding(top = 8.dp).constrainAs(spaceFirst) {
             top.linkTo(parent.top)
             start.linkTo(parent.start)
             end.linkTo(parent.end)
         })
-        GlideImage(
-            model = video.thumbnail,
+        GlideImage(contentScale = ContentScale.Fit,
+            model = wallpaperUi.thumbnail,
             contentDescription = null,
-            modifier = Modifier.height(200.dp).clip(RoundedCornerShape(8.dp))
+            modifier = Modifier.clip(RoundedCornerShape(8.dp))
                 .constrainAs(thumbnail) {
                     top.linkTo(spaceFirst.bottom)
                     start.linkTo(parent.start)
@@ -68,20 +66,34 @@ fun WallpaperItem(video: WallpaperUi) {
                 .clip(CircleShape)
                 .background(yallowColorEC9718)
                 .constrainAs(icon) {
-                    top.linkTo(topGuideline)
-                    start.linkTo(startGuideline)
+                    top.linkTo(parent.top, 8.dp)
+                    start.linkTo(parent.start, 8.dp)
                 })
 
-        PremiumIcon(painterResource(id = R.drawable.video_icon_onbording_second_screen),
+        PremiumIcon(painterResource(id = getIconTypeFrom(mediaType = wallpaperUi.wallpaperType)),
             modifier = Modifier
                 .clip(CircleShape)
                 .background("#3D222222".color)
                 .constrainAs(wallpaperTypeIcon) {
-                    top.linkTo(topGuideline)
-                    end.linkTo(endGuideline)
+                    top.linkTo(parent.top, 8.dp)
+                    end.linkTo(parent.end,8.dp)
                 })
 
     }
 
+}
 
+private fun getIconTypeFrom(mediaType: WallpaperType):Int{
+   return when(mediaType){
+        WallpaperType.VIDEO->{
+            R.drawable.video_icon
+        }
+       WallpaperType.GIF->{
+           R.drawable.ic_baseline_gif_24
+       }
+       WallpaperType.IMAGE->{
+           R.drawable.ic_baseline_image_24
+       }
+
+    }
 }

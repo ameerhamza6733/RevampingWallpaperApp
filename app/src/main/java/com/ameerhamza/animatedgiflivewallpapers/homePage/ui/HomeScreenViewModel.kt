@@ -5,8 +5,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.paging.PagingData
 import androidx.paging.map
-import com.ameerhamza.animatedgiflivewallpapers.homePage.data.model.MediaType
-import com.ameerhamza.animatedgiflivewallpapers.homePage.data.model.VideoWallpaperRequest
+import com.ameerhamza.animatedgiflivewallpapers.homePage.data.model.WallpaperType
+import com.ameerhamza.animatedgiflivewallpapers.homePage.data.model.WallpaperRequest
 import com.ameerhamza.animatedgiflivewallpapers.homePage.data.model.WallpaperUi
 import com.ameerhamza.animatedgiflivewallpapers.homePage.data.repo.WallpaperRepository
 import com.ameerhamza.animatedgiflivewallpapers.homePage.state.MainScreenState
@@ -31,15 +31,15 @@ class HomeScreenViewModel @Inject constructor(
 
     fun getWallpapers(): Flow<PagingData<WallpaperUi>> {
         Log.d(TAG, "loading the data")
-        return videoRepository.getVideosWithPaging(
-            VideoWallpaperRequest("Nature")
+        return videoRepository.getWallpapersWithPaging(
+            WallpaperRequest("Nature")
         ).map { pagingData ->
             pagingData.map {
                 WallpaperUi(
                     thumbnail = it.image,
                     duration = 0,
                     url = it.url,
-                    MediaType.VIDEO
+                    wallpaperType = it.wallpaperType
                 )
             }
         }

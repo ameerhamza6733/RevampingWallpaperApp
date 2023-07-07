@@ -1,9 +1,9 @@
 package com.ameerhamza.animatedgiflivewallpapers.homePage.data.model
 
-class WallpaperUi (val thumbnail:String, val duration:Long, val url:String,val wallpaperType:MediaType)
+data class WallpaperUi (val thumbnail:String, val duration:Long, val url:String,val wallpaperType:WallpaperType)
 
-sealed class MediaType{
-    object VIDEO : MediaType()
-    object IMAGE : MediaType()
-    object GIF : MediaType()
+sealed class WallpaperType{
+    object VIDEO : WallpaperType()
+    object IMAGE : WallpaperType()
+    object GIF : WallpaperType()
 }

@@ -4,7 +4,7 @@ import androidx.paging.PagingSource
 import androidx.paging.PagingState
 import com.ameerhamza.animatedgiflivewallpapers.BuildConfig
 import com.ameerhamza.animatedgiflivewallpapers.homePage.data.model.ImageWallpaperListApiResponse
-import com.ameerhamza.animatedgiflivewallpapers.homePage.data.model.SimilarCategories
+import com.ameerhamza.animatedgiflivewallpapers.homePage.data.model.ImageWallpaperSimilarCategories
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
 import org.jsoup.nodes.Element
@@ -40,11 +40,11 @@ class ImagePagingDataSource : PagingSource<Int, ImageWallpaperListApiResponse>()
                 null
             }
 
-            val categories: MutableList<SimilarCategories> = ArrayList<SimilarCategories>()
+            val categories: MutableList<ImageWallpaperSimilarCategories> = ArrayList<ImageWallpaperSimilarCategories>()
             try {
                 for (element in eCategories) {
                     val title: String = element.select("h4").text()
-                    if (SimilarCategories.blackListCategores.containsKey(
+                    if (ImageWallpaperSimilarCategories.blackListCategories.containsKey(
                             title.lowercase(
 
                             )
@@ -57,7 +57,7 @@ class ImagePagingDataSource : PagingSource<Int, ImageWallpaperListApiResponse>()
                         backgroundImage.indexOf(")")
                     )
                     println("link $link")
-                    categories.add(SimilarCategories(title))
+                    categories.add(ImageWallpaperSimilarCategories(title))
                 }
             } catch (e: Exception) {
                 e.printStackTrace()

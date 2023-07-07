@@ -2,7 +2,7 @@ package com.ameerhamza.animatedgiflivewallpapers.homePage.data.model
 
 import com.google.gson.annotations.SerializedName
 
-class VideoWallpaperPixelsApiResponse(
+data class VideoWallpaperPixelsApiResponse(
     @SerializedName("total_results") val totalResults: Int,
     @SerializedName("prev_page") val prevPage: String?,
     @SerializedName("next_page") val nextPage: String?,
@@ -14,7 +14,7 @@ class VideoWallpaperPixelsApiResponse(
                 image = image,
                 url = url,
                 id = id,
-               wallpaperType = WallpaperResponse.VIDEO_WALLPAPER
+               wallpaperType = WallpaperType.VIDEO
             )
         }
     }

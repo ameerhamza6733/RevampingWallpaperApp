@@ -3,7 +3,7 @@ package com.ameerhamza.animatedgiflivewallpapers.homePage.data.repo
 import androidx.paging.*
 import com.ameerhamza.animatedgiflivewallpapers.homePage.data.dataSources.CombineDataSource
 import com.ameerhamza.animatedgiflivewallpapers.homePage.data.dataSources.VideoRemotePagingSource
-import com.ameerhamza.animatedgiflivewallpapers.homePage.data.model.VideoWallpaperRequest
+import com.ameerhamza.animatedgiflivewallpapers.homePage.data.model.WallpaperRequest
 import com.ameerhamza.animatedgiflivewallpapers.homePage.data.model.WallpaperResponse
 import com.ameerhamza.animatedgiflivewallpapers.homePage.data.servies.VideoWallpaperService
 import kotlinx.coroutines.CoroutineScope
@@ -14,8 +14,8 @@ class WallpaperRepository @Inject constructor(private val videoApiService: Video
 
     private val TAG = "WallpaperRepository"
 
-    fun getVideosWithPaging(
-        videoWallpaperRequest: VideoWallpaperRequest
+    fun getWallpapersWithPaging(
+        wallpaperRequest: WallpaperRequest
     ): Flow<PagingData<WallpaperResponse>> {
 
         val config = PagingConfig(
@@ -23,16 +23,13 @@ class WallpaperRepository @Inject constructor(private val videoApiService: Video
             prefetchDistance = 1,
         )
 
-        val videoRemoteDataSource = CombineDataSource(
+        val combineDataSource = CombineDataSource(
             videoApiService
-        )
+        ,wallpaperRequest)
 
         return Pager(config) {
-            videoRemoteDataSource
+            combineDataSource
         }.flow
     }
 
-    companion object {
-        val DEFAULT_VIDEO_WALLPAPER_REMOTE_SOURCE = VideoRemotePagingSource.VIDEO_WALLPAPER_PIXEL
-    }
 }
