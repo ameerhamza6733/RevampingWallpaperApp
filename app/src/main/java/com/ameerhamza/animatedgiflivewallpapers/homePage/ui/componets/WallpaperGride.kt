@@ -23,13 +23,13 @@ import com.bumptech.glide.integration.compose.ExperimentalGlideComposeApi
 import com.bumptech.glide.integration.compose.GlideImage
 
 
-
 @Composable
 fun WallPaperList(wallpaperList: LazyPagingItems<WallpaperUi>, modifier: Modifier) {
 
-    LazyVerticalGrid(modifier=modifier,
+    LazyVerticalGrid(
+        modifier = modifier,
         columns = GridCells.Fixed(3)
-        ) {
+    ) {
         items(wallpaperList.itemCount, key = { index ->
             wallpaperList.get(index)!!.thumbnail
         }) { index ->
@@ -43,17 +43,21 @@ fun WallPaperList(wallpaperList: LazyPagingItems<WallpaperUi>, modifier: Modifie
 fun WallpaperView(wallpaperUi: WallpaperUi) {
 
     ConstraintLayout {
-        val ( spaceFirst, thumbnail, icon, wallpaperTypeIcon, wallpaperTitle) = createRefs()
+        val (spaceFirst, thumbnail, icon, wallpaperTypeIcon, wallpaperTitle) = createRefs()
 
-        Spacer(modifier = Modifier.padding(top = 8.dp).constrainAs(spaceFirst) {
-            top.linkTo(parent.top)
-            start.linkTo(parent.start)
-            end.linkTo(parent.end)
-        })
-        GlideImage(contentScale = ContentScale.Fit,
+        Spacer(modifier = Modifier.padding(top = 8.dp)
+            .constrainAs(spaceFirst) {
+                top.linkTo(parent.top)
+                start.linkTo(parent.start)
+                end.linkTo(parent.end)
+            })
+        GlideImage(
+            contentScale = ContentScale.FillBounds,
             model = wallpaperUi.thumbnail,
             contentDescription = null,
-            modifier = Modifier.clip(RoundedCornerShape(8.dp))
+            modifier = Modifier
+                .height(200.dp)
+                .clip(RoundedCornerShape(8.dp))
                 .constrainAs(thumbnail) {
                     top.linkTo(spaceFirst.bottom)
                     start.linkTo(parent.start)
@@ -66,7 +70,7 @@ fun WallpaperView(wallpaperUi: WallpaperUi) {
                 .clip(CircleShape)
                 .background(yallowColorEC9718)
                 .constrainAs(icon) {
-                    top.linkTo(parent.top, 8.dp)
+                    top.linkTo(parent.top, 16.dp)
                     start.linkTo(parent.start, 8.dp)
                 })
 
@@ -75,25 +79,25 @@ fun WallpaperView(wallpaperUi: WallpaperUi) {
                 .clip(CircleShape)
                 .background("#3D222222".color)
                 .constrainAs(wallpaperTypeIcon) {
-                    top.linkTo(parent.top, 8.dp)
-                    end.linkTo(parent.end,8.dp)
+                    top.linkTo(parent.top, 16.dp)
+                    end.linkTo(parent.end, 8.dp)
                 })
 
     }
 
 }
 
-private fun getIconTypeFrom(mediaType: WallpaperType):Int{
-   return when(mediaType){
-        WallpaperType.VIDEO->{
+private fun getIconTypeFrom(mediaType: WallpaperType): Int {
+    return when (mediaType) {
+        WallpaperType.VIDEO -> {
             R.drawable.video_icon
         }
-       WallpaperType.GIF->{
-           R.drawable.ic_baseline_gif_24
-       }
-       WallpaperType.IMAGE->{
-           R.drawable.ic_baseline_image_24
-       }
+        WallpaperType.GIF -> {
+            R.drawable.ic_baseline_gif_24
+        }
+        WallpaperType.IMAGE -> {
+            R.drawable.ic_baseline_image_24
+        }
 
     }
 }

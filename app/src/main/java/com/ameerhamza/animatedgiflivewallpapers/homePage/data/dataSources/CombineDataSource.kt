@@ -6,7 +6,6 @@ import androidx.paging.PagingState
 import com.ameerhamza.animatedgiflivewallpapers.BuildConfig
 import com.ameerhamza.animatedgiflivewallpapers.homePage.data.model.*
 import com.ameerhamza.animatedgiflivewallpapers.homePage.data.servies.VideoWallpaperService
-import com.google.gson.Gson
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import org.jsoup.Jsoup
@@ -25,73 +24,73 @@ class CombineDataSource(
     }
 
     override suspend fun load(params: LoadParams<DiscoverWallpaperPagingKey>): LoadResult<DiscoverWallpaperPagingKey, WallpaperResponse> {
-        return try {
-            val pagingKey =
-                params.key ?: DiscoverWallpaperPagingKey(1, 1)
 
-            val videoWallpaper = try {
-                videoApiService.getVideos(
-                    perPage = 10,
-                    query = wallpaperRequest.searchTerm,
-                    page = pagingKey.videoPageKey ?: 1,
-                    orientation = "portrait"
-                )
-            } catch (e: Exception) {
-                null
-            }
+        val pagingKey =
+            params.key ?: DiscoverWallpaperPagingKey(1, 1)
 
-            val imageWallpaper = try {
-                withContext(Dispatchers.IO) {
-                    getImageWallpaper(
-                        wallpaperRequest.searchTerm,
-                        pagingKey.imageWallpaperKey ?: 1
-                    )
-                }
-            } catch (e: Exception) {
-                null
-            }
-
-            val wallpapers = try {
-                withContext(Dispatchers.Default) {
-                    Log.d(TAG,"marge image and video wallpaper total video wallpapers ${videoWallpaper?.videos?.size} image wallpaper ${imageWallpaper?.imageWallpaperListResponse?.size}")
-                    margeAllWallpaper(
-                        videoWallpaper?.videos,
-                        imageWallpaper?.imageWallpaperListResponse
-                    )
-                }
-            } catch (e: Exception) {
-                null
-            }
-
-            val videoWallpaperNextPage =
-                if (videoWallpaper?.nextPage != null) pagingKey.videoPageKey!! + 1 else null
-            val imageWallpaperNextPage =
-                if (imageWallpaper?.nextPageNumber != null) pagingKey.imageWallpaperKey!! + 1 else null
-            val discoverWallpaperDataSource = DiscoverWallpaperPagingKey(
-                videoWallpaperNextPage,
-                imageWallpaperKey = imageWallpaperNextPage
+        val videoWallpaper = try {
+            videoApiService.getVideos(
+                perPage = 10,
+                query = wallpaperRequest.searchTerm,
+                page = pagingKey.videoPageKey ?: 1,
+                orientation = "portrait"
             )
-
-            Log.d(TAG,"wallpaper size ${wallpapers?.size}")
-
-            LoadResult.Page(
-                data = wallpapers ?: listOf(),
-                prevKey = null,
-                nextKey = discoverWallpaperDataSource
-            )
-
         } catch (e: Exception) {
-            e.printStackTrace()
-            LoadResult.Error(e)
+            null
         }
+
+        val imageWallpaper = try {
+            withContext(Dispatchers.IO) {
+                getImageWallpaper(
+                    wallpaperRequest.searchTerm,
+                    pagingKey.imageWallpaperKey ?: 1
+                )
+            }
+        } catch (e: Exception) {
+            null
+        }
+
+        val wallpapers = try {
+            withContext(Dispatchers.Default) {
+                Log.d(
+                    TAG,
+                    "marge image and video wallpaper total video wallpapers ${videoWallpaper?.videos?.size} image wallpaper ${imageWallpaper?.imageWallpaperListResponse?.size}"
+                )
+                margeAllWallpaper(
+                    videoWallpaper?.videos,
+                    imageWallpaper?.imageWallpaperListResponse
+                )
+            }
+        } catch (e: Exception) {
+            null
+        }
+
+        val videoWallpaperNextPage =
+            if (videoWallpaper?.nextPage != null) pagingKey.videoPageKey!! + 1 else null
+        val imageWallpaperNextPage =
+            if (imageWallpaper?.nextPageNumber != null) pagingKey.imageWallpaperKey!! + 1 else null
+        val discoverWallpaperDataSource = DiscoverWallpaperPagingKey(
+            videoWallpaperNextPage,
+            imageWallpaperKey = imageWallpaperNextPage
+        )
+
+        Log.d(TAG, "wallpaper size ${wallpapers?.size}")
+
+        return LoadResult.Page(
+            data = wallpapers ?: listOf(),
+            prevKey = null,
+            nextKey = discoverWallpaperDataSource
+        )
+
+
     }
 
 
     private fun margeAllWallpaper(
         videoWallpaperList: List<VideoWallpaperPixelsApiResponse.VideoWallpaperPixelsVideoListResponse>?,
         imageWallpaperList: List<ImageWallpaperListApiResponse>?
-    ): MutableList<WallpaperResponse> {
-        val wallpaperResponse = mutableListOf<WallpaperResponse>()
+    ): List<WallpaperResponse> {
+        val wallpaperResponse = hashSetOf<WallpaperResponse>()
 
         videoWallpaperList?.map { videoWallpaperPixelsVideoListResponse ->
             WallpaperResponse(
@@ -115,7 +114,7 @@ class CombineDataSource(
             wallpaperResponse.addAll(it)
         }
 
-        return wallpaperResponse
+        return wallpaperResponse.toList()
     }
 
     private fun getImageWallpaper(search: String, page: Int): ImageWallpaperApiResponse {
@@ -141,7 +140,8 @@ class CombineDataSource(
             } catch (e: Exception) {
                 null
             }
-            val categories: MutableList<ImageWallpaperSimilarCategories> = ArrayList<ImageWallpaperSimilarCategories>()
+            val categories: MutableList<ImageWallpaperSimilarCategories> =
+                ArrayList<ImageWallpaperSimilarCategories>()
 
             for (element in eCategories) {
                 val title: String = element.select("h4").text()
