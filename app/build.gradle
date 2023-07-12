@@ -30,6 +30,7 @@ android {
     buildTypes {
         release {
             minifyEnabled false
+            buildConfigField "String", "BASE_URL", "\"https://api.pexels.com/videos/\""
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
         debug {
