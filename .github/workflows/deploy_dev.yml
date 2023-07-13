@@ -28,10 +28,9 @@ jobs:
           versionCode: ${{ github.run_number }}
 
       - name: Replace API Key
-          env:
-            PEXELS_API_KEY: ${{ secrets.PEXELS_API_KEY }}
-          run: |
-            sed -i "s/PEXELS_API_KEY=.*/PEXELS_API_KEY=\"${PEXELS_API_KEY}\"/" gradle.properties
+        env:
+          PEXELS_API_KEY: ${{ secrets.PEXELS_API_KEY }}
+        run: echo PEXELS_API_KEY=\"$PEXELS_API_KEY\" ./gradle.properties
 
       - name: Insert shopify base url gradle secret
         run: echo IMAGE_BASE_URL_SHOPIFY='${{ secrets.IMAGE_BASE_URL_SHOPIFY }}' '' > gradle.properties
