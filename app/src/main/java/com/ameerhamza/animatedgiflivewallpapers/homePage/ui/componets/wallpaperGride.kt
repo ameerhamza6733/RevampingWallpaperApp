@@ -9,6 +9,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
@@ -38,7 +39,7 @@ fun wallPaperList(wallpaperList: LazyPagingItems<WallpaperUi>, modifier: Modifie
 
 @OptIn(ExperimentalGlideComposeApi::class)
 @Composable
-fun wallpaperItem(video: WallpaperUi) {
+fun wallpaperItem(wallpaperUi: WallpaperUi) {
 
     ConstraintLayout {
         val ( spaceFirst, thumbnail, icon, wallpaperTypeIcon, wallpaperTitle) = createRefs()
@@ -53,7 +54,8 @@ fun wallpaperItem(video: WallpaperUi) {
             end.linkTo(parent.end)
         })
         GlideImage(
-            model = video.thumbnail,
+            contentScale = ContentScale.Crop,
+            model = wallpaperUi.thumbnail,
             contentDescription = null,
             modifier = Modifier.height(200.dp).clip(RoundedCornerShape(8.dp))
                 .constrainAs(thumbnail) {

@@ -4,7 +4,11 @@ import android.util.Log
 import androidx.paging.PagingSource
 import androidx.paging.PagingState
 import com.ameerhamza.animatedgiflivewallpapers.BuildConfig
-import com.ameerhamza.animatedgiflivewallpapers.homePage.data.model.*
+import com.ameerhamza.animatedgiflivewallpapers.homePage.data.model.ImageWallpaper
+import com.ameerhamza.animatedgiflivewallpapers.homePage.data.model.ImageWallpaperApiResponse
+import com.ameerhamza.animatedgiflivewallpapers.homePage.data.model.SimilarCategories
+import com.ameerhamza.animatedgiflivewallpapers.homePage.data.model.VideoWallpaperPixelsApiResponse
+import com.ameerhamza.animatedgiflivewallpapers.homePage.data.model.WallpaperResponse
 import com.ameerhamza.animatedgiflivewallpapers.homePage.data.servies.VideoWallpaperService
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -48,23 +52,28 @@ class DiscoverWallpaperDataSource(
             } catch (e: Exception) {
                 null
             }
-
+            Log.d(TAG, "total image wallpaper ${imageWallpaper?.images?.size}")
             val wallpapers = try {
                 withContext(Dispatchers.Default) {
                     margeAllWallpaper(
-                        videoWallpaper?.videos,
-                        imageWallpaper?.imageWallpaperListResponse
+                        null,
+                        imageWallpaper?.images
                     )
                 }
             } catch (e: Exception) {
+                e.printStackTrace()
                 null
             }
 
             val discoverWallpaperDataSource =
-                margeKey(videoWallpaper?.nextPage, imageWallpaper?.nextPageNumber)
+                margeKey(videoWallpaper?.nextPage, imageWallpaper?.nextPage)
 
 
-            LoadResult.Page(data = wallpapers?: listOf(), prevKey = null, nextKey = discoverWallpaperDataSource)
+            LoadResult.Page(
+                data = wallpapers ?: listOf(),
+                prevKey = null,
+                nextKey = discoverWallpaperDataSource
+            )
 
 
         } catch (e: Exception) {
@@ -85,7 +94,7 @@ class DiscoverWallpaperDataSource(
 
     private fun margeAllWallpaper(
         videoWallpaperList: List<VideoWallpaperPixelsApiResponse.VideoWallpaperPixelsVideoListResponse>?,
-        imageWallpaperList: List<ImageWallpaperListApiResponse>?
+        imageWallpaperList: List<ImageWallpaper>?
     ): MutableList<WallpaperResponse> {
         val wallpaperResponse = mutableListOf<WallpaperResponse>()
 
@@ -107,6 +116,8 @@ class DiscoverWallpaperDataSource(
                 url = imageWallpaperListApiResponse.imageUrl,
                 wallpaperType = WallpaperResponse.IMAGE_WALLPAPER
             )
+        }?.let {
+            wallpaperResponse.addAll(it)
         }
 
         return wallpaperResponse
@@ -114,8 +125,7 @@ class DiscoverWallpaperDataSource(
 
     private fun getImageWallpaper(): ImageWallpaperApiResponse {
         return try {
-            1 / 0
-            val photoList = arrayListOf<ImageWallpaperListApiResponse>()
+            val photoList = arrayListOf<ImageWallpaper>()
             val doc: Document = Jsoup.connect(BuildConfig.IMAGE_BASE_URL_SHOPIFY)
                 .userAgent("Mozilla/5.0 (Windows; U; WindowsNT 5.1; en-US; rv1.8.1.6) Gecko/20070725 Firefox/2.0.0.6")
                 .get()
@@ -161,11 +171,11 @@ class DiscoverWallpaperDataSource(
                 var imageUrl: String = iteratorImageUrl.next().attr("data-srcset")
                 val lowResImageUrl = imageUrl.split(" ".toRegex()).toTypedArray()[0]
                 imageUrl = imageUrl.substring(0, imageUrl.indexOf("?"))
-                photoList.add(ImageWallpaperListApiResponse(lowResImageUrl, imageUrl, title))
+                photoList.add(ImageWallpaper(lowResImageUrl, imageUrl, title))
             }
             ImageWallpaperApiResponse(
-                nextPageNumber = nextPage,
-                imageWallpaperListResponse = photoList
+                nextPage = nextPage,
+                images = photoList
             )
         } catch (e: Exception) {
             throw e

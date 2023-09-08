@@ -20,7 +20,7 @@ class WallpaperRepository @Inject constructor(private val videoApiService: Video
 
         val config = PagingConfig(
             pageSize = 40,
-            prefetchDistance = 0,
+            prefetchDistance = 1,
         )
 
         val videoRemoteDataSource = DiscoverWallpaperDataSource(
